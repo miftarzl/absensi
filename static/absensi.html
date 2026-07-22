@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Absensi — Mahasiswa Magang DJKI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --surface2: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #3b82f6;
+      --accent: #059669;
+      --accent-light: #d1fae5;
+      --danger: #dc2626;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --radius-lg: 20px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37, 99, 235, 0.08), transparent 50%),
+        radial-gradient(ellipse 60% 40% at 100% 80%, rgba(5, 150, 105, 0.06), transparent 45%),
+        linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+    }
+    .absensi-page {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .absensi-hero {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 1.75rem 1.5rem;
+      background: linear-gradient(135deg, #ffffff 0%, #ffffff 40%, #ffffff 100%);
+      border-radius: var(--radius-lg);
+      color: #000000;
+      box-shadow: 0 20px 50px rgba(37, 99, 235, 0.22), 0 8px 24px rgba(5, 150, 105, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .absensi-hero::before {
+      content: '';
+      position: absolute;
+      top: -30%; right: -20%;
+      width: 50%; height: 120%;
+      background: radial-gradient(circle, rgba(152, 69, 69, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .absensi-hero h1 { font-size: 1.65rem; margin-bottom: 0.35rem; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.08); position: relative; z-index: 1; }
+    .absensi-hero .sub { color: rgb(8, 42, 113); font-size: 0.9rem; margin-bottom: 0; position: relative; z-index: 1; }
+    .absensi-hero .hero-badge { display: inline-block; margin-top: 1rem; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; position: relative; z-index: 1; }
+    .absensi-hero .absensi-logo-wrap {
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 14px;
+    }
+    .absensi-hero .absensi-logo {
+      max-height: 64px;
+      width: auto;
+      max-width: 180px;
+      object-fit: contain;
+      display: block;
+    }
+    .absensi-hero .absensi-logo-placeholder {
+      display: none;
+      width: 80px;
+      height: 64px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      border: 2px dashed #cbd5e1;
+      color: #64748b;
+      font-size: 0.7rem;
+      font-weight: 600;
+      line-height: 1.2;
+      text-align: center;
+      padding: 12px 8px;
+      box-sizing: border-box;
+    }
+    .absensi-hero .absensi-logo-placeholder.visible { display: flex !important; align-items: center; justify-content: center; }
+
+    .wrap {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: 2rem 2rem 2.25rem;
+      border: 1px solid var(--surface2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+      position: relative;
+      z-index: 1;
+    }
+    .wrap .section-title { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 1rem; text-align: center; }
+    .choice-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0; }
+    @media (max-width: 420px) { .choice-buttons { grid-template-columns: 1fr; } }
+    .choice-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.5rem 1.25rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .choice-btn.cb-masuk {
+      background: linear-gradient(145deg, #059669 0%, #047857 100%);
+      color: white;
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.35);
+    }
+    .choice-btn.cb-masuk:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(5, 150, 105, 0.4);
+    }
+    .choice-btn.cb-keluar {
+      background: linear-gradient(145deg, #2563eb 0%, #1d4ed8 100%);
+      color: white;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+    }
+    .choice-btn.cb-keluar:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(37, 99, 235, 0.35);
+    }
+    #section-camera { display: none; margin-top: 0; text-align: left; }
+    #section-camera.show { display: block; animation: sectionIn 0.35s ease; }
+    @keyframes sectionIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .camera-label { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 0.35rem; }
+    .camera-hint { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .video-wrap {
+      background: #111;
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 1rem 0 1.25rem;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.2);
+      border: 3px solid var(--surface2);
+    }
+    .video-wrap video, .video-wrap canvas { width: 100%; display: block; }
+    video.mirrored { transform: scaleX(-1); }
+    .video-wrap canvas { display: none; }
+    .btn {
+      background: linear-gradient(135deg, var(--primary), #1d4ed8);
+      color: white;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3); }
+    .btn-back { background: var(--surface2); margin-top: 0.75rem; border: 1px solid #cbd5e1; color: var(--text); }
+    .btn-back:hover { background: #cbd5e1; box-shadow: none; transform: none; }
+    .msg { padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin: 1rem 0; font-size: 0.9rem; }
+    .msg.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .msg.success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: none;
+      align-items: center; justify-content: center; z-index: 1000; padding: 1rem;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.show { display: flex; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-box {
+      background: var(--surface);
+      border-radius: 20px; padding: 2.25rem; max-width: 400px; width: 100%;
+      border: 1px solid var(--surface2); box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+      text-align: center;
+      animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.96) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .modal-box .icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; }
+    .modal-box h3 { font-size: 1.3rem; margin-bottom: 0.5rem; font-weight: 600; }
+    .modal-box .detail { font-size: 1.05rem; margin-bottom: 0.4rem; font-weight: 600; }
+    .modal-box .detail-sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem; }
+    .modal-box .time { color: var(--primary); font-weight: 600; margin-bottom: 1.25rem; font-size: 1rem; }
+    .modal-box .btn { width: 100%; padding: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="absensi-page">
+    <div class="absensi-hero">
+      <div class="absensi-logo-wrap">
+        <img src="/logo-djki.png" alt="Logo DJKI" class="absensi-logo" onerror="this.onerror=null;this.src='/logo-djki.svg';">
+        <div id="absensi-logo-placeholder" class="absensi-logo-placeholder">Logo<br>DJKI</div>
+      </div>
+      <span class="hero-badge">Face Recognition</span>
+      <h1>Absensi Mahasiswa Magang</h1>
+      <p class="sub">Direktorat Jenderal Kekayaan Intelektual</p>
+      <p class="sub">Kementrian Hukum Republik Indonesia</p>
+    </div>
+
+    <div class="wrap">
+      <div id="section-pilih">
+        <p class="section-title">Pilih jenis absensi</p>
+        <div class="choice-buttons">
+          <button type="button" class="choice-btn cb-masuk" id="btn-pilih-masuk">Absen Masuk</button>
+          <button type="button" class="choice-btn cb-keluar" id="btn-pilih-keluar">Absen Keluar</button>
+        </div>
+      </div>
+
+      <div id="section-camera">
+        <p class="camera-label" id="label-status">Absen Masuk</p>
+        <p class="camera-hint">Hadapkan wajah ke kamera lalu klik Ambil Foto.</p>
+        <div class="video-wrap">
+          <video id="video-absen" class="mirrored" autoplay playsinline></video>
+          <canvas id="canvas-absen"></canvas>
+        </div>
+        <button type="button" class="btn" id="btn-ambil-foto" style="margin-top: 1.25rem;">📷 Ambil Foto</button>
+        <button type="button" class="btn btn-back" id="btn-ganti-opsi">← Ganti opsi (Masuk / Keluar)</button>
+        <div id="msg-absen"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-result" class="modal-overlay">
+    <div class="modal-box">
+      <div class="icon" id="modal-icon">✅</div>
+      <h3 id="modal-title">Absen Berhasil</h3>
+      <p class="detail" id="modal-detail"></p>
+      <p class="detail-sub" id="modal-univ-dir"></p>
+      <p class="time" id="modal-time"></p>
+      <button type="button" class="btn" id="modal-close">Tutup</button>
+    </div>
+  </div>
+
+  <script>
+    const API = '/api';
+    let selectedStatus = 'masuk';
+
+    document.getElementById('btn-pilih-masuk').addEventListener('click', () => { selectedStatus = 'masuk'; showCamera(); });
+    document.getElementById('btn-pilih-keluar').addEventListener('click', () => { selectedStatus = 'keluar'; showCamera(); });
+    document.getElementById('btn-ganti-opsi').addEventListener('click', () => { document.getElementById('section-pilih').style.display = 'block'; document.getElementById('section-camera').classList.remove('show'); stopVideo(); });
+    document.getElementById('modal-close').addEventListener('click', () => { document.getElementById('modal-result').classList.remove('show'); document.getElementById('section-pilih').style.display = 'block'; document.getElementById('section-camera').classList.remove('show'); stopVideo(); });
+
+    function showCamera() {
+      document.getElementById('section-pilih').style.display = 'none';
+      document.getElementById('section-camera').classList.add('show');
+      document.getElementById('label-status').textContent = selectedStatus === 'masuk' ? 'Absen Masuk' : 'Absen Keluar';
+      document.getElementById('msg-absen').innerHTML = '';
+      startVideo();
+    }
+
+    let stream = null;
+    function startVideo() {
+      const video = document.getElementById('video-absen');
+      if (stream) return;
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+        .then(s => { video.srcObject = s; stream = s; })
+        .catch(() => { document.getElementById('msg-absen').innerHTML = '<div class="msg error">Akses kamera ditolak.</div>'; });
+    }
+    function stopVideo() {
+      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+      document.getElementById('video-absen').srcObject = null;
+    }
+
+    function capture() {
+      const video = document.getElementById('video-absen');
+      const canvas = document.getElementById('canvas-absen');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (video.classList.contains('mirrored')) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+      }
+      ctx.drawImage(video, 0, 0);
+      return canvas.toDataURL('image/jpeg', 0.9);
+    }
+
+
+
+    document.getElementById('btn-ambil-foto').addEventListener('click', async () => {
+      const msgEl = document.getElementById('msg-absen');
+      msgEl.innerHTML = '<div class="msg" style="background: #eff6ff; color: #1d4ed8;">Memproses...</div>';
+      const dataUrl = capture();
+      const res = await fetch(API + '/absensi', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ image: dataUrl, status: selectedStatus }) });
+      const j = await res.json();
+      msgEl.innerHTML = '';
+      if (j.success) {
+        document.getElementById('modal-icon').textContent = '✅';
+        document.getElementById('modal-title').textContent = 'Absen ' + (j.status === 'masuk' ? 'Masuk' : 'Keluar') + ' Berhasil';
+        document.getElementById('modal-detail').textContent = j.mahasiswa.nama;
+        document.getElementById('modal-univ-dir').textContent = (j.mahasiswa.asal_universitas || '-') + ' · ' + (j.mahasiswa.nama_direktorat_lantai_magang || '-');
+        document.getElementById('modal-time').textContent = j.waktu ? new Date(j.waktu).toLocaleString('id-ID') : '';
+        document.getElementById('modal-result').classList.add('show');
+      } else {
+        msgEl.innerHTML = '<div class="msg error">' + (j.error || 'Gagal') + '</div>';
+      }
+    });
+  </script>
+</body>
+</html>

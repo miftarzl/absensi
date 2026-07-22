@@ -1,0 +1,8 @@
+# Sistem Absensi Mahasiswa Magang - Face Recognition OpenCV
+flask>=3.0.0
+opencv-contrib-python>=4.8.0
+mysql-connector-python>=8.2.0
+pillow>=10.0.0
+flask-cors>=4.0.0
+numpy>=1.24.0,<2
+python-dotenv>=1.0.0

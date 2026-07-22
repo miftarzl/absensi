@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # Database Service (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: absensi_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: skripsi_absensi_djki
+      MYSQL_USER: user_absensi
+      MYSQL_PASSWORD: user_password
+    ports:
+      # Mapping port 3038 ke port internal MySQL 3306
+      - "3038:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # Otomatis eksekusi file SQL awal saat container database pertama kali dibuat
+      - ./database.sql:/docker-entrypoint-initdb.d/1_database.sql:ro
+      - ./migrate_v2.sql:/docker-entrypoint-initdb.d/2_migrate_v2.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Web Application Service (Flask)
+  web:
+    build: .
+    container_name: absensi_web
+    restart: always
+    ports:
+      # Mapping port 8088 host ke port 80 container
+      - "8088:80"
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=root_password
+      - DB_NAME=skripsi_absensi_djki
+      - SECRET_KEY=rahasia-super-aman-ganti-di-produksi
+      - UPLOAD_FOLDER=uploads
+      - MODEL_FOLDER=recognizer
+    volumes:
+      - ./uploads:/app/uploads
+      - ./recognizer:/app/recognizer
+      - ./dataset:/app/dataset
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:

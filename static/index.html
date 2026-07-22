@@ -1,0 +1,2976 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Absensi Mahasiswa Magang - DJKI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --bg-subtle: #f8fafc;
+      --surface: #ffffff;
+      --surface-hover: #f1f5f9;
+      --surface2: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #3b82f6;
+      --primary-glow: rgba(37, 99, 235, 0.15);
+      --accent: #059669;
+      --accent-hover: #10b981;
+      --danger: #dc2626;
+      --danger-hover: #ef4444;
+      --warning: #d97706;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --radius: 14px;
+      --radius-sm: 10px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-card: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      background-image: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .container { max-width: 1280px; margin: 0 auto; padding: 1.75rem 1.5rem; }
+    /* Logo: ganti src img atau hapus .logo-placeholder untuk pakai gambar */
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-wrap img.brand-logo,
+    .logo-wrap img {
+      height: 48px;
+      width: auto;
+      max-width: 180px;
+      object-fit: contain;
+      display: block;
+    }
+    header .logo-wrap img.brand-logo,
+    header .logo-wrap img {
+      height: 44px;
+      max-width: 160px;
+    }
+    #screen-login .logo-wrap img.brand-logo,
+    #screen-login .logo-wrap img {
+      height: 64px;
+      max-width: 220px;
+      margin: 0 auto;
+    }
+    .logo-placeholder {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-subtle);
+      border: 1px dashed var(--surface2);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: 0.65rem;
+      text-align: center;
+      line-height: 1.2;
+      padding: 4px;
+    }
+    .logo-placeholder.visible { display: flex; }
+    header {
+      background: var(--surface);
+      padding: 0;
+      border-bottom: 1px solid var(--surface2);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header .container { padding-top: 1.1rem; padding-bottom: 1.1rem; }
+    header .flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    header .brand { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    header h1 { font-size: 1.25rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.3; }
+    header h1 .highlight { color: var(--primary); }
+    header .subtitle { color: var(--text-muted); font-size: 0.78rem; margin-top: 0.15rem; line-height: 1.4; }
+    .main-nav {
+      display: flex;
+      gap: 0.3rem;
+      margin-top: 1rem;
+      padding: 0.35rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--surface2);
+      border-radius: 12px;
+      flex-wrap: wrap;
+    }
+    .main-nav button {
+      flex: 1 1 auto;
+      min-width: fit-content;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.62rem 1rem;
+      border-radius: 9px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+    }
+    .main-nav button:hover { background: var(--surface); color: var(--text); }
+    .main-nav button.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 10px var(--primary-glow);
+    }
+    nav { display: flex; gap: 0.35rem; margin-top: 1.25rem; flex-wrap: wrap; }
+    nav button {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 0.6rem 1.1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    nav button:hover { background: var(--surface2); color: var(--text); }
+    nav button.active { background: var(--primary); color: white; border-color: transparent; box-shadow: 0 2px 8px var(--primary-glow); }
+    nav .nav-link { padding: 0.6rem 1.1rem; border-radius: var(--radius-sm); background: rgba(5, 150, 105, 0.1); color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 500; border: 1px solid rgba(5, 150, 105, 0.3); transition: all 0.2s; }
+    nav .nav-link:hover { background: rgba(5, 150, 105, 0.2); color: var(--accent-hover); border-color: var(--accent); }
+    button.btn-logout {
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--surface2);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    button.btn-logout:hover { background: #fef2f2; color: var(--danger); border-color: #fecaca; }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex-shrink: 0;
+    }
+    .btn-profile {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.28rem 0.85rem 0.28rem 0.28rem;
+      border-radius: 999px;
+      border: 2px solid #bfdbfe;
+      background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      animation: profilePulse 2.8s ease-in-out infinite;
+    }
+    .btn-profile:hover {
+      transform: translateY(-1px);
+      border-color: var(--primary);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.18);
+    }
+    @keyframes profilePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.28); }
+      50% { box-shadow: 0 0 0 7px rgba(37, 99, 235, 0); }
+    }
+    .btn-profile .profile-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #059669);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .btn-profile .profile-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text);
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    @media (max-width: 520px) {
+      .btn-profile .profile-label { display: none; }
+      .btn-profile { padding: 0.28rem; }
+    }
+    .profile-page-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 768px) { .profile-page-grid { grid-template-columns: 1fr; } }
+    .profile-summary-card {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-left: 4px solid var(--primary);
+    }
+    .profile-avatar-lg {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #059669);
+      color: #fff;
+      font-size: 2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+    }
+    .profile-summary-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .profile-summary-meta {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-bottom: 0.15rem;
+    }
+    .profile-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 600px) { .profile-info-grid { grid-template-columns: 1fr; } }
+    .profile-info-item {
+      padding: 0.75rem 0.9rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--surface2);
+      border-radius: var(--radius-sm);
+    }
+    .profile-info-item .label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      margin-bottom: 0.2rem;
+    }
+    .profile-info-item .value {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--text);
+      word-break: break-word;
+    }
+    .profile-section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin: 1.25rem 0 0.85rem;
+      padding-bottom: 0.35rem;
+      border-bottom: 1px solid var(--surface2);
+    }
+    main { padding: 1.75rem 0 3rem; }
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--surface2);
+      box-shadow: var(--shadow-card);
+    }
+    .card h2 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .card-profile { border-left: 4px solid var(--primary); }
+    .card-profile-header { margin-bottom: 1.5rem; }
+    .card-profile-icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; opacity: 0.9; }
+    .card-desc { margin-bottom: 1rem; font-size: 0.875rem; color: var(--text-muted); }
+    .sub-card-title { font-size: 1rem; font-weight: 600; color: var(--primary); margin-bottom: 0.75rem; }
+    .direktorat-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .direktorat-tab {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      background: var(--surface2);
+      border: 1px solid transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.8125rem;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .direktorat-tab:hover { background: var(--surface-hover); border-color: var(--primary); color: var(--primary); }
+    .direktorat-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+    label { display: block; margin-bottom: 0.35rem; font-size: 0.8125rem; font-weight: 500; color: var(--text-muted); }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--surface2);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9375rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.8; }
+    button.btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.35rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    }
+    button.btn:hover { background: var(--primary-hover); box-shadow: 0 4px 14px var(--primary-glow); }
+    button.btn:active { transform: scale(0.98); }
+    button.btn-danger { background: var(--danger); }
+    button.btn-danger:hover { background: var(--danger-hover); box-shadow: 0 4px 14px rgba(239,68,68,0.25); }
+    button.btn-success { background: var(--accent); }
+    button.btn-success:hover { background: var(--accent-hover); box-shadow: 0 4px 14px rgba(34,197,94,0.25); }
+    button.btn-secondary { background: var(--surface2); color: var(--text); }
+    button.btn-secondary:hover { background: #cbd5e1; }
+    a.btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      box-sizing: border-box;
+    }
+    a.btn:hover { text-decoration: none; color: inherit; }
+    a.btn-success { color: #fff; }
+    a.btn-success:hover { color: #fff; }
+    .video-wrap {
+      position: relative;
+      background: #000;
+      border-radius: var(--radius);
+      overflow: hidden;
+      max-width: 480px;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    .video-wrap video, .video-wrap canvas { width: 100%; display: block; }
+    .video-wrap canvas { display: none; }
+    .msg { padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1rem; font-size: 0.875rem; }
+    .msg.success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .msg.error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .msg.info { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .msg.warning { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th, td { padding: 0.65rem 0.85rem; text-align: left; border-bottom: 1px solid var(--surface2); vertical-align: middle; }
+    th { color: var(--text-muted); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--surface); }
+    tr:hover td { background: var(--bg-subtle); }
+    .actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .actions button { padding: 0.35rem 0.6rem; font-size: 0.72rem; white-space: nowrap; }
+
+    /* Daftar data banyak — toolbar, scroll, pagination */
+    .list-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 0.85rem 1rem;
+      background: var(--bg-subtle);
+      border: 1px solid var(--surface2);
+      border-radius: var(--radius-sm);
+    }
+    .list-toolbar input[type="search"],
+    .list-toolbar select {
+      margin-bottom: 0;
+      width: auto;
+      min-width: 140px;
+      flex: 1 1 160px;
+      font-size: 0.875rem;
+      padding: 0.5rem 0.75rem;
+    }
+    .list-toolbar .toolbar-meta {
+      flex: 1 1 100%;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+    @media (min-width: 768px) {
+      .list-toolbar .toolbar-meta { flex: 0 0 auto; margin-left: auto; text-align: right; }
+    }
+    .table-scroll-wrap {
+      overflow: auto;
+      max-height: min(560px, 65vh);
+      border: 1px solid var(--surface2);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+    }
+    .table-scroll-wrap table { margin: 0; }
+    .table-scroll-wrap thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--surface);
+      box-shadow: 0 1px 0 var(--surface2);
+    }
+    .table-scroll-wrap tbody tr:nth-child(even) td { background: #fafbfc; }
+    .table-scroll-wrap tbody tr:hover td { background: #eff6ff; }
+    .cell-ellipsis {
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .cell-nowrap { white-space: nowrap; }
+    .pagination {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--surface2);
+    }
+    .pagination-info { font-size: 0.8125rem; color: var(--text-muted); }
+    .pagination-btns { display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: center; }
+    .pagination-btns button {
+      min-width: 2.1rem;
+      padding: 0.38rem 0.6rem;
+      font-size: 0.8125rem;
+      border-radius: 8px;
+      border: 1px solid var(--surface2);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .pagination-btns button:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+    .pagination-btns button.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .pagination-btns button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pagination-ellipsis { padding: 0 0.25rem; color: var(--text-muted); font-size: 0.8125rem; }
+    .dir-student-table .dir-mhs-btn { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+    .summary-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .summary-chip {
+      font-size: 0.8125rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--surface2);
+      color: var(--text-muted);
+    }
+    .summary-chip strong { color: var(--text); }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    @media (max-width: 600px) { .row2 { grid-template-columns: 1fr; } }
+
+    /* Login screen */
+    #screen-login {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    #screen-login .login-box {
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+    }
+    #screen-login .logo-wrap { justify-content: center; margin-bottom: 1.75rem; }
+    #screen-login .logo-placeholder { width: 80px; height: 80px; font-size: 0.75rem; border-radius: 14px; }
+    #screen-login .card {
+      padding: 2.25rem;
+      text-align: left;
+      border: 1px solid var(--surface2);
+      box-shadow: var(--shadow-card);
+    }
+    #screen-login h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text); }
+    #screen-login .login-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    #screen-login .btn { width: 100%; padding: 0.85rem 1rem; margin-top: 0.25rem; font-size: 1rem; border-radius: var(--radius-sm); }
+    #screen-login .login-hint { margin-top: 1.25rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; padding: 0.75rem; background: #eff6ff; border-radius: var(--radius-sm); border: 1px solid #bfdbfe; }
+
+    /* Peringatan registrasi wajah */
+    .alert-wajah {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #b45309;
+      padding: 1.1rem 1.25rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1.25rem;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    .alert-wajah strong { display: block; margin-bottom: 0.4rem; color: #92400e; }
+    .pose-step {
+      background: var(--surface2);
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+      font-weight: 500;
+      border-left: 3px solid var(--primary);
+    }
+    .pose-step .nomor { color: var(--primary); margin-right: 0.5rem; }
+    .absen-buttons { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+    .absen-buttons .btn { flex: 1; min-width: 160px; padding: 0.85rem 1.25rem; font-size: 0.9375rem; }
+    .absen-result { margin-top: 1rem; padding: 1.1rem 1.25rem; border-radius: var(--radius-sm); font-size: 1rem; line-height: 1.5; }
+    .absen-result.ok { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .absen-result.fail { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+    /* Modal popup absen berhasil */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
+      z-index: 1000; padding: 1rem; animation: fadeIn 0.2s ease;
+    }
+    .modal-box {
+      background: var(--surface);
+      border-radius: 18px; padding: 2.25rem; max-width: 420px; width: 100%;
+      border: 1px solid var(--surface2); box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+    .modal-box .icon-success { font-size: 3rem; margin-bottom: 1rem; }
+    .modal-box h3 { font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--text); }
+    .modal-box .detail { color: var(--text); font-size: 1rem; margin-bottom: 0.5rem; font-weight: 600; }
+    .modal-box .detail-sub { color: var(--text-muted); font-size: 0.875rem; font-weight: 400; margin-bottom: 1rem; }
+    .modal-box .time { color: var(--primary); font-weight: 600; font-size: 1rem; }
+    .modal-box .btn { margin-top: 0.5rem; width: 100%; }
+
+    /* Dashboard — ringkas, tanpa duplikasi menu */
+    .dash-welcome {
+      margin-bottom: 1.5rem;
+      padding: 1.75rem 2rem;
+      background: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #059669 100%);
+      color: #fff;
+      border: none;
+      text-align: center;
+    }
+    .dash-welcome h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: #fff;
+    }
+    .dash-welcome p {
+      color: rgba(255,255,255,0.9);
+      font-size: 0.9375rem;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .dash-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .laporan-stats { margin-top: 0; }
+    @media (max-width: 900px) { .dash-stats { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .dash-stats { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--surface2);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.35rem;
+      box-shadow: var(--shadow-card);
+    }
+    .stat-card .stat-label {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .stat-card .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .stat-card .stat-note {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+    .stat-card.stat-primary { border-top: 3px solid var(--primary); }
+    .stat-card.stat-accent { border-top: 3px solid var(--accent); }
+    .stat-card.stat-warning { border-top: 3px solid var(--warning); }
+    .stat-card.stat-purple { border-top: 3px solid #7c3aed; }
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+    @media (max-width: 960px) { .dash-grid { grid-template-columns: 1fr; } }
+    .workflow-card { overflow: hidden; }
+    .workflow-header {
+      text-align: center;
+      margin-bottom: 1.35rem;
+    }
+    .workflow-header .card-desc { margin-bottom: 0; }
+    .workflow-badge {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      margin-bottom: 0.5rem;
+    }
+    .workflow-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    @media (max-width: 960px) { .workflow-steps { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 520px) { .workflow-steps { grid-template-columns: 1fr; } }
+    .wf-step {
+      position: relative;
+      padding: 1rem 1rem 0.95rem;
+      border-radius: 12px;
+      border: 1px solid var(--surface2);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .wf-step:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .wf-step::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      border-radius: 12px 12px 0 0;
+    }
+    .wf-step-1::before { background: linear-gradient(90deg, #2563eb, #3b82f6); }
+    .wf-step-2::before { background: linear-gradient(90deg, #059669, #10b981); }
+    .wf-step-3::before { background: linear-gradient(90deg, #7c3aed, #8b5cf6); }
+    .wf-step-4::before { background: linear-gradient(90deg, #d97706, #f59e0b); }
+    .wf-step-1 { background: linear-gradient(180deg, #eff6ff 0%, #fff 55%); }
+    .wf-step-2 { background: linear-gradient(180deg, #ecfdf5 0%, #fff 55%); }
+    .wf-step-3 { background: linear-gradient(180deg, #f5f3ff 0%, #fff 55%); }
+    .wf-step-4 { background: linear-gradient(180deg, #fffbeb 0%, #fff 55%); }
+    .wf-step-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.65rem;
+    }
+    .wf-step-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      background: rgba(255,255,255,0.85);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .wf-step-num {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .wf-step h3 {
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+      line-height: 1.3;
+    }
+    .wf-step p {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+      margin: 0 0 0.65rem;
+    }
+    .wf-menu-tag {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 0.22rem 0.55rem;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--surface2);
+      color: var(--text);
+    }
+    .wf-step-1 .wf-menu-tag { color: #1d4ed8; border-color: #bfdbfe; background: #eff6ff; }
+    .wf-step-2 .wf-menu-tag { color: #047857; border-color: #a7f3d0; background: #ecfdf5; }
+    .wf-step-3 .wf-menu-tag { color: #6d28d9; border-color: #ddd6fe; background: #f5f3ff; }
+    .wf-step-4 .wf-menu-tag { color: #b45309; border-color: #fde68a; background: #fffbeb; }
+    .workflow-flow-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      padding: 0.75rem 1rem;
+      background: var(--bg-subtle);
+      border: 1px dashed var(--surface2);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .workflow-flow-note strong { color: var(--text); }
+    .workflow-nav-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      justify-content: center;
+    }
+    .workflow-nav-chips span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--surface2);
+      color: var(--text-muted);
+    }
+    .workflow-nav-chips span.chip-primary {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+    .dash-absensi-card {
+      margin-bottom: 0;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid #6ee7b7;
+      background: linear-gradient(155deg, #ecfdf5 0%, #ffffff 70%);
+      box-shadow: 0 4px 18px rgba(5, 150, 105, 0.1);
+      display: flex;
+      flex-direction: column;
+    }
+    .dash-absensi-card .absensi-card-inner {
+      padding: 1.15rem 1.25rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex-grow: 1;
+    }
+    .dash-absensi-card .absensi-badge {
+      display: inline-block;
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #047857;
+      background: rgba(5, 150, 105, 0.12);
+      border: 1px solid #a7f3d0;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      margin-bottom: 0.25rem;
+    }
+    .dash-absensi-card h2 {
+      margin-bottom: 0;
+      font-size: 1.05rem;
+      color: #065f46;
+    }
+    .dash-absensi-card .absensi-desc {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin: 0;
+      line-height: 1.45;
+    }
+    .absensi-features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.65rem;
+    }
+    .absensi-features li {
+      font-size: 0.75rem;
+      color: #047857;
+      padding: 0.2rem 0.55rem;
+      background: rgba(5, 150, 105, 0.08);
+      border-radius: 999px;
+      line-height: 1.3;
+    }
+    .absensi-features li::before { content: none; }
+    .btn-absensi-cta {
+      width: 100%;
+      padding: 0.65rem 1rem !important;
+      font-size: 0.875rem !important;
+      background: linear-gradient(135deg, #047857 0%, #059669 50%, #10b981 100%) !important;
+      border-radius: 9px !important;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.28);
+      transition: transform 0.15s, box-shadow 0.2s !important;
+      margin-top: auto;
+    }
+    .btn-absensi-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(5, 150, 105, 0.4) !important;
+      background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%) !important;
+    }
+    .dash-menu-hint {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      color: #1e40af;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    /* Tombol nama mahasiswa di daftar per direktorat */
+    .dir-mhs-btn {
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      color: var(--primary);
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+    }
+    .dir-mhs-btn:hover { text-decoration: underline; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-success {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+    .badge-muted {
+      background: #e5e7eb;
+      color: #4b5563;
+      border: 1px solid #d1d5db;
+    }
+
+    /* Daftar mahasiswa — kartu grid */
+    .mhs-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .mhs-list-header h2 { margin-bottom: 0.25rem; }
+    .mhs-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 1rem;
+    }
+    .mhs-card {
+      background: var(--surface);
+      border: 1px solid var(--surface2);
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .mhs-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+    .mhs-card-photo {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      background: linear-gradient(135deg, #e2e8f0, #f1f5f9);
+    }
+    .mhs-card-photo-placeholder {
+      width: 100%;
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: var(--text-muted);
+      background: linear-gradient(135deg, #e2e8f0, #f8fafc);
+    }
+    .mhs-card-body { padding: 0.75rem 0.65rem 0.85rem; }
+    .mhs-card-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.35;
+      margin-bottom: 0.25rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .mhs-card-dir {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .mhs-card-badge {
+      display: inline-block;
+      margin-top: 0.4rem;
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+    }
+    .card-form-mahasiswa { margin-bottom: 1.5rem; }
+    .form-mahasiswa-actions {
+      display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .mhs-action-box { max-width: 360px; text-align: center; }
+    .mhs-action-box .mhs-modal-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 1rem;
+      border: 4px solid var(--surface2);
+      display: block;
+    }
+    .mhs-action-box .mhs-modal-photo-placeholder {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      background: var(--bg-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      border: 4px solid var(--surface2);
+    }
+    .mhs-action-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin: 1.25rem 0;
+    }
+    .mhs-action-btns .btn { width: 100%; }
+    
+    /* Style untuk tab alur kerja */
+    .workflow-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--surface2);
+      padding-bottom: 0.5rem;
+    }
+    .workflow-tab-btn {
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 0.5rem 0.85rem;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .workflow-tab-btn:hover {
+      color: var(--text);
+      background: var(--bg-subtle);
+    }
+    .workflow-tab-btn.active {
+      color: var(--primary);
+      background: var(--primary-glow);
+    }
+    
+    /* Layout Diagram Metodologi */
+    .methodology-container {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      align-items: stretch;
+      justify-content: center;
+    }
+    @media (max-width: 1024px) {
+      .methodology-container {
+        flex-direction: column;
+        gap: 2rem;
+      }
+    }
+    .methodology-section {
+      flex: 1;
+      border: 2px dashed #cbd5e1;
+      border-radius: 14px;
+      padding: 1.25rem;
+      background: var(--bg-subtle);
+      position: relative;
+      transition: border-color 0.3s;
+    }
+    .methodology-section:hover {
+      border-color: #94a3b8;
+    }
+    .methodology-section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    
+    /* Pembuatan Model: Alur Vertikal */
+    .model-flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .flow-node {
+      background: var(--surface);
+      border: 1px solid var(--surface2);
+      border-radius: 8px;
+      padding: 0.6rem 0.85rem;
+      width: 100%;
+      max-width: 280px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.8125rem;
+      color: var(--text);
+      box-shadow: var(--shadow);
+      transition: all 0.25s ease;
+      position: relative;
+      cursor: help;
+    }
+    .flow-node:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.12);
+      color: var(--primary);
+    }
+    .flow-node .node-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--primary-glow);
+      color: var(--primary);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 0.65rem;
+      font-weight: 700;
+      margin-right: 0.35rem;
+    }
+    .flow-node:hover .node-num {
+      background: var(--primary);
+      color: #fff;
+    }
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #cbd5e1;
+      height: 16px;
+    }
+    .down-arrow-svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    /* Tooltip */
+    .node-tooltip {
+      position: absolute;
+      bottom: 110%;
+      left: 50%;
+      transform: translateX(-50%) translateY(5px);
+      background: #1e293b;
+      color: #fff;
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      width: 220px;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 10;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+    .node-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #1e293b;
+    }
+    .flow-node:hover .node-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    /* Panah Penghubung Desktop (Kiri ke Kanan) */
+    @media (min-width: 1025px) {
+      .flow-node-deployment::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        width: 60px;
+        height: 2px;
+        background: #94a3b8;
+        transform: translateY(-50%);
+        z-index: 5;
+      }
+      .flow-node-deployment::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: calc(100% + 52px);
+        width: 8px;
+        height: 8px;
+        border-top: 2px solid #94a3b8;
+        border-right: 2px solid #94a3b8;
+        transform: translateY(-50%) rotate(45deg);
+        z-index: 5;
+      }
+    }
+    
+    .methodology-download-note {
+      text-align: center;
+      margin-top: 1.25rem;
+      padding: 0.75rem;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-sm);
+      border: 1px dashed var(--surface2);
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+    }
+    
+    /* CSS Animasi Face Scan di Kartu Absensi */
+    .absensi-scanner-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 1rem 0;
+      flex-grow: 1;
+    }
+    .scanner-frame {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      background: rgba(5, 150, 105, 0.03);
+      border-radius: 12px;
+      border: 1px solid rgba(5, 150, 105, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: inset 0 0 15px rgba(5, 150, 105, 0.05);
+    }
+    .face-scan-svg {
+      width: 80%;
+      height: 80%;
+    }
+    .scan-laser {
+      animation: scanAnimation 3s infinite ease-in-out;
+    }
+    @keyframes scanAnimation {
+      0% { y1: 15; y2: 15; opacity: 0.2; }
+      10% { opacity: 1; }
+      50% { y1: 85; y2: 85; opacity: 1; }
+      90% { opacity: 1; }
+      100% { y1: 15; y2: 15; opacity: 0.2; }
+    }
+    .scanner-text {
+      margin-top: 0.65rem;
+      font-size: 0.725rem;
+      font-weight: 700;
+      color: #047857;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      animation: pulseText 1.5s infinite alternate;
+    }
+    @keyframes pulseText {
+      0% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    /* Header Absensi Button */
+    .btn-absensi-header {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+      color: white !important;
+      font-size: 0.8125rem !important;
+      font-weight: 600 !important;
+      padding: 0.45rem 1rem !important;
+      border-radius: 999px !important;
+      border: 1px solid #10b981 !important;
+      text-decoration: none !important;
+      display: inline-flex !important;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s !important;
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.15);
+      cursor: pointer;
+    }
+    .btn-absensi-header:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.28) !important;
+      background: linear-gradient(135deg, #047857 0%, #059669 100%) !important;
+    }
+    .btn-absensi-header:active {
+      transform: translateY(0);
+    }
+    .btn-absensi-header .btn-icon {
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 520px) {
+      .btn-absensi-header span.btn-text { display: none; }
+      .btn-absensi-header {
+        padding: 0.45rem !important;
+        width: 32px;
+        height: 32px;
+        justify-content: center;
+        border-radius: 50% !important;
+      }
+    }
+    video.mirrored {
+      transform: scaleX(-1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Layar login (hanya tampil jika belum login) -->
+  <div id="screen-login" style="display: none;">
+    <div class="login-box">
+      <!-- Logo: ganti dengan <img src="logo.png" alt="Logo"> atau simpan di static/logo.png -->
+      <div class="logo-wrap">
+        <img src="/logo-djki.png" alt="Logo DJKI" class="brand-logo" onerror="this.onerror=null;this.src='/logo-djki.svg';">
+        <div class="logo-placeholder">Logo<br>DJKI</div>
+      </div>
+      <div class="card">
+        <h2>Sistem Absensi Mahasiswa Magang</h2>
+        <p class="login-subtitle">Direktorat Jenderal Kekayaan Intelektual — Login Admin</p>
+        <form id="form-login">
+          <label>Username</label>
+          <input type="text" name="username" required autocomplete="username" placeholder="admin">
+          <label>Password</label>
+          <input type="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+          <div id="login-msg"></div>
+          <button type="submit" class="btn">Masuk</button>
+        </form>
+        <p class="login-hint">Default: username <strong>admin</strong>, password <strong>admin123</strong>. Setelah login, lengkapi profil admin lewat tombol profil di kanan atas.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aplikasi admin -->
+  <div id="screen-app">
+    <header>
+      <div class="container">
+        <div class="flex">
+          <div class="brand">
+            <div class="logo-wrap">
+              <img src="/logo-djki.png" alt="Logo DJKI" class="brand-logo" onerror="this.onerror=null;this.src='/logo-djki.svg';">
+              <div class="logo-placeholder">Logo<br>DJKI</div>
+            </div>
+            <div>
+              <h1>Sistem <span class="highlight">Absensi</span> Mahasiswa Magang</h1>
+              <p class="subtitle">Direktorat Jenderal Kekayaan Intelektual — Pengenalan Wajah OpenCV (LBPH)</p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="btn-profile" id="btn-profile" title="Profil Admin">
+              <span class="profile-avatar" id="header-avatar">A</span>
+              <span class="profile-label" id="header-profile-name">Admin</span>
+            </button>
+            <a href="absensi.html" target="_blank" rel="noopener" class="btn-absensi-header" title="Buka Halaman Absensi">
+              <span class="btn-icon">📸</span><span class="btn-text">Absensi</span>
+            </a>
+            <button type="button" class="btn btn-logout" id="btn-logout">Keluar</button>
+          </div>
+        </div>
+        <nav class="main-nav" aria-label="Menu utama">
+          <button type="button" data-panel="dashboard" class="active">Dashboard</button>
+          <button type="button" data-panel="mahasiswa">Daftar Mahasiswa</button>
+          <button type="button" data-panel="laporan">Laporan</button>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="container">
+        <!-- Dashboard -->
+        <section id="panel-dashboard" class="panel active">
+          <div class="card dash-welcome">
+            <h2>Selamat datang, Admin</h2>
+            <p>Panel pengelolaan absensi mahasiswa magang DJKI. Gunakan menu di atas untuk mengelola data, registrasi wajah, dan laporan.</p>
+          </div>
+
+          <div class="dash-grid">
+            <div class="card workflow-card">
+              <div class="workflow-header">
+                <span class="workflow-badge">Sistem &amp; Alur</span>
+                <h2>Alur Kerja Sistem</h2>
+                <p class="card-desc">Panduan operasional penggunaan sistem absensi mahasiswa magang.</p>
+              </div>
+
+              <!-- Tab Content 1: Panduan Operasional -->
+              <div id="workflow-operational-content">
+                <div class="workflow-flow-note">
+                  <strong>1</strong> Daftar &nbsp;→&nbsp; <strong>2</strong> Foto Wajah &nbsp;→&nbsp; <strong>3</strong> Scan Model &nbsp;→&nbsp; <strong>4</strong> Absensi &amp; Laporan
+                </div>
+
+                <div class="workflow-steps">
+                  <article class="wf-step wf-step-1">
+                    <div class="wf-step-top">
+                      <span class="wf-step-icon" aria-hidden="true">👥</span>
+                      <span class="wf-step-num">Langkah 1</span>
+                    </div>
+                    <h3>Daftar Mahasiswa</h3>
+                    <p>Input data magang: nama, NPM, direktorat, dan periode.</p>
+                    <span class="wf-menu-tag">📍 Menu: Daftar Mahasiswa</span>
+                  </article>
+
+                  <article class="wf-step wf-step-2">
+                    <div class="wf-step-top">
+                      <span class="wf-step-icon" aria-hidden="true">📷</span>
+                      <span class="wf-step-num">Langkah 2</span>
+                    </div>
+                    <h3>Registrasi Wajah</h3>
+                    <p>Ambil 5 foto wajah dari berbagai sudut untuk setiap mahasiswa.</p>
+                    <span class="wf-menu-tag">📍 Menu: Daftar Mahasiswa</span>
+                  </article>
+
+                  <article class="wf-step wf-step-3">
+                    <div class="wf-step-top">
+                      <span class="wf-step-icon" aria-hidden="true">🧠</span>
+                      <span class="wf-step-num">Langkah 3</span>
+                    </div>
+                    <h3>Scan Model LBPH</h3>
+                    <p>Aktifkan pengenalan wajah agar sistem siap dipakai absensi.</p>
+                    <span class="wf-menu-tag">📍 Tombol: Scan Model</span>
+                  </article>
+
+                  <article class="wf-step wf-step-4">
+                    <div class="wf-step-top">
+                      <span class="wf-step-icon" aria-hidden="true">📊</span>
+                      <span class="wf-step-num">Langkah 4</span>
+                    </div>
+                    <h3>Absensi &amp; Laporan</h3>
+                    <p>Mahasiswa absen di halaman khusus. Admin pantau lewat laporan.</p>
+                    <span class="wf-menu-tag">📍 Menu: Laporan</span>
+                  </article>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Daftar Mahasiswa (Step 1: form, Step 2: registrasi wajah) -->
+        <section id="panel-mahasiswa" class="panel">
+          <!-- Step 1: Input data mahasiswa -->
+          <div id="mahasiswa-step1">
+            <!-- Modal Input Mahasiswa -->
+            <div id="card-form-mahasiswa" class="modal-overlay" style="display: none; overflow-y: auto;">
+              <div class="modal-box" style="max-width: 680px; text-align: left; padding: 2rem; border-radius: 18px; width: 100%; box-shadow: 0 25px 60px rgba(0,0,0,0.15); border: 1px solid var(--surface2); background: var(--surface); margin: auto;">
+                <div class="mhs-list-header" style="margin-bottom: 1.25rem; border-bottom: 1px solid var(--surface2); padding-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <h2 id="form-mahasiswa-title" style="font-size: 1.35rem; font-weight: 700; margin-bottom: 0.25rem;">Tambah Mahasiswa Magang</h2>
+                    <p class="card-desc" style="margin:0;">Isi data lalu lanjut ke registrasi wajah.</p>
+                  </div>
+                </div>
+                <form id="form-mahasiswa">
+                  <div class="row2">
+                    <div>
+                      <label>Nama Lengkap *</label>
+                      <input type="text" name="nama" required placeholder="Nama lengkap" style="color: var(--text);">
+                    </div>
+                    <div>
+                      <label>NPM *</label>
+                      <input type="text" name="npm" required placeholder="Contoh: 12345678" style="color: var(--text);">
+                    </div>
+                  </div>
+                  <div class="row2">
+                    <div>
+                      <label>Jurusan</label>
+                      <input type="text" name="jurusan" placeholder="Contoh: Teknik Informatika" style="color: var(--text);">
+                    </div>
+                    <div>
+                      <label>Asal Universitas</label>
+                      <input type="text" name="asal_universitas" placeholder="Nama universitas" style="color: var(--text);">
+                    </div>
+                  </div>
+                  <div class="row2">
+                    <div>
+                      <label>Email</label>
+                      <input type="email" name="email" placeholder="email@contoh.ac.id" style="color: var(--text);">
+                    </div>
+                    <div>
+                      <label>Nama Direktorat Lantai Magang *</label>
+                      <select name="nama_direktorat_lantai_magang" id="select-direktorat-form" required style="color: var(--text); background: var(--bg-subtle);">
+                        <option value="">— Pilih Direktorat —</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row2">
+                    <div>
+                      <label>Periode Magang (Mulai)</label>
+                      <input type="date" name="periode_mulai" id="periode_mulai" style="color: var(--text);">
+                    </div>
+                    <div>
+                      <label>Periode Magang (Selesai)</label>
+                      <input type="date" name="periode_selesai" id="periode_selesai" style="color: var(--text);">
+                    </div>
+                  </div>
+                  <div style="margin-bottom:0.75rem; font-size:0.85rem; color:var(--text-muted);">
+                    <span>Perkiraan durasi: </span>
+                    <strong id="periode_label_display">-</strong>
+                  </div>
+                  <input type="hidden" name="periode_label" id="periode_label">
+                  <div class="row2">
+                    <div>
+                      <label>Nama Mentor</label>
+                      <input type="text" name="nama_mentor" placeholder="Nama mentor pembimbing" style="color: var(--text);">
+                    </div>
+                    <div>
+                      <label id="label-pasfoto">Pasfoto *</label>
+                      <input type="file" name="pasfoto_file" id="mhs-pasfoto-input" accept="image/*">
+                    </div>
+                  </div>
+                  <label>Jobdesc Magang</label>
+                  <textarea name="jobdesc_magang" rows="3" placeholder="Deskripsi tugas/jobdesc magang..." style="color: var(--text);"></textarea>
+                  <div id="form-mahasiswa-msg"></div>
+                  <div class="form-mahasiswa-actions" style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" id="btn-batal-form-mhs-footer" style="margin-top: 0; flex: 1;">Batal</button>
+                    <button type="submit" class="btn" id="btn-submit-mahasiswa" style="margin-top: 0; flex: 1;">Simpan</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Modal Mahasiswa Berhasil -->
+            <div id="modal-mahasiswa-berhasil" class="modal-overlay" style="display: none;">
+              <div class="modal-box">
+                <div class="icon-success">✅</div>
+                <h3>Data Berhasil Disimpan</h3>
+                <p class="detail-sub">Data mahasiswa magang telah tersimpan. Lanjutkan ke registrasi wajah.</p>
+                <button type="button" class="btn" id="btn-close-modal-berhasil">Tutup</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="mhs-list-header">
+                <div>
+                  <h2>Daftar Mahasiswa</h2>
+                  <p class="card-desc" style="margin:0;">Klik kartu mahasiswa untuk Edit, Hapus, atau Registrasi Wajah.</p>
+                </div>
+                <button type="button" class="btn" id="btn-tambah-mahasiswa">+ Tambah Mahasiswa</button>
+              </div>
+              <div id="list-mahasiswa-toolbar" class="list-toolbar" style="display:none;">
+                <input type="search" id="mhs-search" placeholder="Cari nama, NPM, jurusan, universitas...">
+                <select id="mhs-filter-direktorat">
+                  <option value="">Semua direktorat</option>
+                </select>
+                <select id="mhs-page-size">
+                  <option value="12">12 / halaman</option>
+                  <option value="24" selected>24 / halaman</option>
+                  <option value="48">48 / halaman</option>
+                  <option value="96">96 / halaman</option>
+                </select>
+                <span class="toolbar-meta" id="mhs-meta"></span>
+              </div>
+              <div id="list-mahasiswa"></div>
+              <div id="list-mahasiswa-pagination" class="pagination" style="display:none;"></div>
+            </div>
+          </div>
+
+          <!-- Step 2: Registrasi wajah (setelah simpan data) -->
+          <div id="mahasiswa-step2" style="display: none;">
+            <div class="card" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+              <h2>Registrasi Wajah — <span id="reg-nama-mahasiswa"></span></h2>
+              <div class="alert-wajah" style="text-align: left; max-width: 480px; width: 100%; margin: 1rem auto 1.25rem;">
+                <strong>⚠️ Peringatan</strong>
+                Lepaskan semua benda yang menghalangi wajah: <strong>kacamata, masker, penutup kepala (topi/kerudung), dan aksesori wajah</strong>. Wajah harus tampak jelas dari berbagai sudut agar sistem dapat mengenali dengan baik.
+              </div>
+              <p class="pose-step" id="reg-pose-text" style="text-align: left; max-width: 480px; width: 100%; box-sizing: border-box;">Sekarang: <strong id="reg-pose-instruction">Posisi 1 — Hadap lurus ke kamera (pandangan ke depan).</strong> Klik tombol di bawah untuk mengambil foto posisi ini.</p>
+              <div class="video-wrap" style="margin: 0 auto 1.25rem;">
+                <video id="video-reg" autoplay playsinline></video>
+                <canvas id="canvas-reg"></canvas>
+              </div>
+              <div style="margin-bottom: 1.25rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4rem; width: 100%;">
+                <label style="display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; user-select: none;">
+                  <input type="checkbox" id="reg-mirror-toggle" style="cursor: pointer; width: 16px; height: 16px; accent-color: var(--accent);">
+                  <span>Cerminkan Tampilan Kamera</span>
+                </label>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0; max-width: 440px; line-height: 1.4;">
+                  💡 <em>Sesuaikan opsi ini agar arah gerakan Anda di layar seperti cermin. Jika Anda menengok ke kiri, wajah di layar harus menghadap ke kiri.</em>
+                </p>
+              </div>
+              <button type="button" class="btn" id="btn-capture-reg" style="max-width: 320px; width: 100%;">Ambil Foto (Posisi <span id="reg-pose-num">1</span>)</button>
+              <div style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-muted);" id="reg-progress">0 dari 5 foto diambil.</div>
+              <div id="msg-reg" style="width: 100%; max-width: 480px; margin-top: 0.5rem; text-align: left;"></div>
+              <button type="button" class="btn btn-secondary" id="btn-reg-selesai" style="display: none; margin-top: 1rem; max-width: 320px; width: 100%;">Selesai — Kembali ke Daftar</button>
+            </div>
+            <div class="card" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+              <h2>Training Model LBPH</h2>
+              <p style="max-width: 480px; margin-bottom: 1.25rem;">Setelah semua mahasiswa punya sampel wajah (min. 5 pose), scan model agar sistem bisa mengenali wajah saat absensi.</p>
+              <button type="button" class="btn btn-success" id="btn-train" style="max-width: 320px; width: 100%;">Scan Model</button>
+              <div id="msg-train" style="width: 100%; max-width: 480px; margin-top: 0.5rem; text-align: left;"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Laporan -->
+        <section id="panel-laporan" class="panel">
+          <div class="dash-stats laporan-stats">
+            <div class="stat-card stat-primary">
+              <div class="stat-label">Total Mahasiswa</div>
+              <div class="stat-value" id="stat-total-mhs">—</div>
+              <div class="stat-note">Terdaftar di sistem</div>
+            </div>
+            <div class="stat-card stat-accent">
+              <div class="stat-label">Wajah Terdaftar</div>
+              <div class="stat-value" id="stat-wajah-selesai">—</div>
+              <div class="stat-note" id="stat-wajah-note">Siap absensi</div>
+            </div>
+            <div class="stat-card stat-warning">
+              <div class="stat-label">Belum Registrasi Wajah</div>
+              <div class="stat-value" id="stat-wajah-belum">—</div>
+              <div class="stat-note">Perlu 5 foto wajah</div>
+            </div>
+            <div class="stat-card stat-purple">
+              <div class="stat-label">Direktorat Aktif</div>
+              <div class="stat-value" id="stat-direktorat">—</div>
+              <div class="stat-note">Tempat magang</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
+              <div>
+                <h2 style="margin-bottom: 0.25rem;">Laporan Absensi</h2>
+                <p class="card-desc" style="margin-bottom: 0;">Filter berdasarkan tanggal dan direktorat. Data laporan bersifat internal.</p>
+              </div>
+              <button type="button" class="btn btn-primary" id="btn-tambah-absensi-manual" style="margin-bottom: 0; display: inline-flex; align-items: center; gap: 0.4rem;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Input Ketidakhadiran
+              </button>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: flex-end; margin-bottom: 1.5rem;">
+              <div>
+                <label style="margin-bottom: 0.35rem;">Dari (tanggal)</label>
+                <input type="date" id="laporan-dari" style="margin-bottom: 0;">
+              </div>
+              <div>
+                <label style="margin-bottom: 0.35rem;">Sampai (tanggal)</label>
+                <input type="date" id="laporan-sampai" style="margin-bottom: 0;">
+              </div>
+              <div>
+                <label style="margin-bottom: 0.35rem;">Filter Direktorat</label>
+                <select id="laporan-direktorat" style="margin-bottom: 0;">
+                  <option value="">Semua Direktorat</option>
+                </select>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="button" class="btn" id="btn-load-laporan" style="flex: 1; margin-bottom: 0; white-space: nowrap;">Tampilkan</button>
+                <button type="button" class="btn btn-success" id="btn-export-excel" style="flex: 1; margin-bottom: 0; white-space: nowrap; display: none; align-items: center; justify-content: center; gap: 0.4rem;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  Export Excel
+                </button>
+              </div>
+            </div>
+            <div id="msg-laporan"></div>
+            <div id="laporan-summary" class="summary-chips" style="display:none;"></div>
+            <div id="laporan-toolbar" class="list-toolbar" style="display:none;">
+              <input type="search" id="laporan-search" placeholder="Cari nama, NPM, direktorat...">
+              <select id="laporan-page-size">
+                <option value="15">15 / halaman</option>
+                <option value="30" selected>30 / halaman</option>
+                <option value="50">50 / halaman</option>
+                <option value="100">100 / halaman</option>
+              </select>
+              <span class="toolbar-meta" id="laporan-meta"></span>
+            </div>
+            <div id="laporan-table-wrap" class="table-scroll-wrap" style="display:none; margin-top:1rem;">
+              <table id="table-laporan">
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Jam</th>
+                    <th>NPM</th>
+                    <th>Nama</th>
+                    <th>Direktorat</th>
+                    <th>Status</th>
+                    <th>Keterangan</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div id="laporan-pagination" class="pagination" style="display:none;"></div>
+          </div>
+        </section>
+
+        <!-- Profil Admin -->
+        <section id="panel-profil" class="panel">
+          <div class="profile-page-grid">
+            <div class="card profile-summary-card">
+              <div class="profile-avatar-lg" id="profile-avatar-lg">A</div>
+              <div class="profile-summary-name" id="profile-display-name">Admin</div>
+              <div class="profile-summary-meta" id="profile-display-username">@username</div>
+              <div class="profile-summary-meta" id="profile-display-jabatan">—</div>
+              <div class="profile-summary-meta" id="profile-display-unit">DJKI</div>
+            </div>
+            <div class="card">
+              <!-- View Profil Section -->
+              <div id="profile-view-section">
+                <h2>Data Diri Admin</h2>
+                <p class="card-desc">Informasi profil sesuai akun yang sedang login. Setiap admin memiliki data profil masing-masing.</p>
+                <div class="profile-info-grid" id="profile-info-view">
+                  <div class="profile-info-item"><div class="label">Nama Lengkap</div><div class="value" id="view-nama">—</div></div>
+                  <div class="profile-info-item"><div class="label">Username</div><div class="value" id="view-username">—</div></div>
+                  <div class="profile-info-item"><div class="label">Email</div><div class="value" id="view-email">—</div></div>
+                  <div class="profile-info-item"><div class="label">NIP</div><div class="value" id="view-nip">—</div></div>
+                  <div class="profile-info-item"><div class="label">Jabatan</div><div class="value" id="view-jabatan">—</div></div>
+                  <div class="profile-info-item"><div class="label">Unit Kerja</div><div class="value" id="view-unit">—</div></div>
+                  <div class="profile-info-item"><div class="label">No. HP</div><div class="value" id="view-hp">—</div></div>
+                  <div class="profile-info-item"><div class="label">Terdaftar Sejak</div><div class="value" id="view-created">—</div></div>
+                </div>
+                <button type="button" class="btn btn-primary" id="btn-edit-profile-toggle" style="margin-top: 1.5rem; max-width: 200px;">Edit Profil</button>
+              </div>
+
+              <!-- Edit Profil Section -->
+              <div id="profile-edit-section" style="display: none;">
+                <h2>Edit Profil</h2>
+                <p class="card-desc">Ubah data diri dan informasi keamanan akun Anda.</p>
+                <form id="form-admin-profile">
+                  <div class="row2">
+                    <div>
+                      <label>Nama Lengkap</label>
+                      <input type="text" name="nama_lengkap" placeholder="Nama lengkap admin">
+                    </div>
+                    <div>
+                      <label>Email</label>
+                      <input type="email" name="email" placeholder="email@djki.go.id">
+                    </div>
+                  </div>
+                  <div class="row2">
+                    <div>
+                      <label>NIP</label>
+                      <input type="text" name="nip" placeholder="Nomor Induk Pegawai">
+                    </div>
+                    <div>
+                      <label>No. HP</label>
+                      <input type="text" name="no_hp" placeholder="08xxxxxxxxxx">
+                    </div>
+                  </div>
+                  <div class="row2">
+                    <div>
+                      <label>Jabatan</label>
+                      <input type="text" name="jabatan" placeholder="Contoh: Staff TU">
+                    </div>
+                    <div>
+                      <label>Unit Kerja</label>
+                      <input type="text" name="unit_kerja" placeholder="Contoh: Direktorat Jenderal KI">
+                    </div>
+                  </div>
+                  <h3 class="profile-section-title">Keamanan Akun</h3>
+                  <p class="card-desc" style="margin-top:-0.5rem;">Isi password saat ini hanya jika ingin mengubah username atau password.</p>
+                  <label>Password saat ini</label>
+                  <input type="password" name="current_password" placeholder="Wajib jika ubah username/password">
+                  <div class="row2">
+                    <div>
+                      <label>Username baru</label>
+                      <input type="text" name="username" placeholder="Kosongkan jika tidak diubah">
+                    </div>
+                    <div>
+                      <label>Password baru</label>
+                      <input type="password" name="new_password" placeholder="Kosongkan jika tidak diubah">
+                    </div>
+                  </div>
+                  <div id="profile-msg"></div>
+                  <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-profile-edit" style="margin-top: 0; flex: 1;">Batal</button>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 0; flex: 1;">Simpan Perubahan</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <!-- Modal aksi mahasiswa -->
+    <div id="modal-mhs-actions" class="modal-overlay" style="display: none;">
+      <div class="modal-box mhs-action-box">
+        <div id="modal-mhs-photo-wrap"></div>
+        <h3 id="modal-mhs-nama"></h3>
+        <p class="detail-sub" id="modal-mhs-npm"></p>
+        <p class="detail-sub" id="modal-mhs-dir"></p>
+        <div class="mhs-action-btns">
+          <button type="button" class="btn" id="modal-mhs-edit">Edit Data</button>
+          <button type="button" class="btn btn-success" id="modal-mhs-reg">Registrasi Wajah</button>
+          <button type="button" class="btn btn-danger" id="modal-mhs-hapus">Hapus</button>
+        </div>
+        <button type="button" class="btn btn-secondary" id="modal-mhs-close">Tutup</button>
+      </div>
+    </div>
+    <!-- Modal absen berhasil -->
+    <div id="modal-absen" class="modal-overlay" style="display: none;">
+      <div class="modal-box">
+        <div class="icon-success">✅</div>
+        <h3 id="modal-absen-title">Absen Berhasil</h3>
+        <p class="detail" id="modal-absen-detail"></p>
+        <p class="detail detail-sub" id="modal-absen-univ-dir"></p>
+        <p class="time" id="modal-absen-time"></p>
+        <button type="button" class="btn" id="modal-absen-close">Tutup</button>
+      </div>
+    </div>
+    
+    <!-- Modal Input Absensi Manual / Ketidakhadiran -->
+    <div id="modal-tambah-absensi" class="modal-overlay" style="display: none;">
+      <div class="modal-box" style="max-width: 500px; text-align: left; padding: 2rem; border-radius: 18px;">
+        <h3 style="font-size: 1.35rem; margin-bottom: 1.25rem; font-weight: 700; color: var(--text); border-bottom: 1px solid var(--surface2); padding-bottom: 0.75rem;">Input Ketidakhadiran</h3>
+        <form id="form-tambah-absensi">
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.35rem; font-weight: 500;">Mahasiswa *</label>
+            <select id="input-absensi-mahasiswa" name="mahasiswa_id" required style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); border: 1px solid var(--surface2); background: var(--bg-subtle); color: var(--text);">
+              <option value="">— Pilih Mahasiswa —</option>
+            </select>
+          </div>
+          
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.35rem; font-weight: 500;">Tanggal Ketidakhadiran *</label>
+            <input type="date" id="input-absensi-tanggal" name="tanggal" required style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); border: 1px solid var(--surface2); color: var(--text);">
+          </div>
+          
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.35rem; font-weight: 500;">Status *</label>
+            <select id="input-absensi-status" name="status" required style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); border: 1px solid var(--surface2); background: var(--bg-subtle); color: var(--text);">
+              <option value="izin">Izin</option>
+              <option value="tanpa keterangan">Tanpa Keterangan</option>
+            </select>
+          </div>
+          
+          <!-- Tipe Izin (hanya tampil jika status = izin) -->
+          <div id="input-absensi-tipe-container" style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.35rem; font-weight: 500;">Tipe Izin *</label>
+            <select id="input-absensi-tipe" name="tipe_izin" style="width: 100%; padding: 0.65rem; border-radius: var(--radius-sm); border: 1px solid var(--surface2); background: var(--bg-subtle); color: var(--text);">
+              <option value="sakit">Sakit</option>
+              <option value="lainnya">Lainnya (Acara Keluarga, dll)</option>
+            </select>
+          </div>
+          
+          <!-- Upload Surat Izin (hanya tampil jika status = izin) -->
+          <div id="input-absensi-file-container" style="margin-bottom: 1.25rem;">
+            <label style="display: block; margin-bottom: 0.35rem; font-weight: 500;">Surat Izin (PDF) *</label>
+            <input type="file" id="input-absensi-pdf" name="surat_izin" accept=".pdf" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--surface2);">
+            <small style="color: var(--text-muted); display: block; margin-top: 0.25rem;">Format wajib PDF (maksimal 2MB).</small>
+          </div>
+          
+          <div id="input-absensi-msg" style="margin-bottom: 1rem;"></div>
+          
+          <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+            <button type="button" class="btn btn-secondary" id="btn-close-absensi-modal" style="margin-top: 0; flex: 1;">Batal</button>
+            <button type="submit" class="btn btn-primary" style="margin-top: 0; flex: 1;">Simpan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    const API = '/api';
+    const credentials = 'include';
+
+    // Instruksi untuk foto yang AKAN diambil (sinkron: posisi 1 = instruksi 1, dst)
+    const POSES = [
+      'Posisi 1 — Hadap lurus ke kamera (pandangan ke depan).',
+      'Posisi 2 — Nengok ke kiri (wajah perlahan menghadap kiri).',
+      'Posisi 3 — Nengok ke kanan (wajah perlahan menghadap kanan).',
+      'Posisi 4 — Lihat ke atas (dagu sedikit terangkat).',
+      'Posisi 5 — Lihat ke bawah (kepala sedikit menunduk).'
+    ];
+
+    // --- Pagination & filter (untuk data banyak) ---
+    let mahasiswaCache = [];
+    let mhsPage = 1;
+    let mhsPageSize = 24;
+    let mhsSearch = '';
+    let mhsFilterDir = '';
+    let selectedMhsModal = null;
+    let pasfotoBase64 = null;
+
+    let laporanCache = [];
+    let laporanPage = 1;
+    let laporanPageSize = 30;
+    let laporanSearch = '';
+
+    function escapeHtml(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function paginateItems(items, page, pageSize) {
+      const total = items.length;
+      const totalPages = Math.max(1, Math.ceil(total / pageSize) || 1);
+      const safePage = Math.min(Math.max(1, page), totalPages);
+      const start = (safePage - 1) * pageSize;
+      return {
+        items: items.slice(start, start + pageSize),
+        page: safePage,
+        totalPages,
+        total,
+      };
+    }
+
+    function getPageNumbers(current, total) {
+      if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+      const pages = [1];
+      if (current > 3) pages.push('...');
+      for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) pages.push(i);
+      if (current < total - 2) pages.push('...');
+      if (total > 1) pages.push(total);
+      return pages;
+    }
+
+    function renderPagination(container, opts) {
+      const { page, totalPages, total, pageSize, onPageChange } = opts;
+      if (!total) {
+        container.style.display = 'none';
+        container.innerHTML = '';
+        return;
+      }
+      container.style.display = 'flex';
+      const from = (page - 1) * pageSize + 1;
+      const to = Math.min(page * pageSize, total);
+      const pages = getPageNumbers(page, totalPages);
+      let btns = `<button type="button" data-page="${page - 1}" ${page <= 1 ? 'disabled' : ''} aria-label="Halaman sebelumnya">‹</button>`;
+      pages.forEach(p => {
+        if (p === '...') btns += '<span class="pagination-ellipsis">…</span>';
+        else btns += `<button type="button" data-page="${p}" class="${p === page ? 'active' : ''}">${p}</button>`;
+      });
+      btns += `<button type="button" data-page="${page + 1}" ${page >= totalPages ? 'disabled' : ''} aria-label="Halaman berikutnya">›</button>`;
+      container.innerHTML = `
+        <span class="pagination-info">Baris ${from}–${to} dari ${total}</span>
+        <div class="pagination-btns">${btns}</div>`;
+      container.querySelectorAll('button[data-page]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const next = parseInt(btn.getAttribute('data-page'), 10);
+          if (!isNaN(next) && next >= 1 && next <= totalPages) onPageChange(next);
+        });
+      });
+    }
+
+    function bindListControls() {
+      const mhsSearchEl = document.getElementById('mhs-search');
+      if (mhsSearchEl && !mhsSearchEl.dataset.bound) {
+        mhsSearchEl.dataset.bound = '1';
+        mhsSearchEl.addEventListener('input', (e) => { mhsSearch = e.target.value; mhsPage = 1; renderMahasiswaList(); });
+        document.getElementById('mhs-filter-direktorat').addEventListener('change', (e) => { mhsFilterDir = e.target.value; mhsPage = 1; renderMahasiswaList(); });
+        document.getElementById('mhs-page-size').addEventListener('change', (e) => { mhsPageSize = parseInt(e.target.value, 10) || 24; mhsPage = 1; renderMahasiswaList(); });
+      }
+      const lapSearchEl = document.getElementById('laporan-search');
+      if (lapSearchEl && !lapSearchEl.dataset.bound) {
+        lapSearchEl.dataset.bound = '1';
+        lapSearchEl.addEventListener('input', (e) => { laporanSearch = e.target.value; laporanPage = 1; renderLaporanTable(); });
+        document.getElementById('laporan-page-size').addEventListener('change', (e) => { laporanPageSize = parseInt(e.target.value, 10) || 30; laporanPage = 1; renderLaporanTable(); });
+      }
+    }
+
+    function showMsg(el, text, type) {
+      if (!el) return;
+      el.innerHTML = text ? `<div class="msg ${type}">${text}</div>` : '';
+    }
+
+    function showScreen(login) {
+      document.getElementById('screen-login').style.display = login ? 'block' : 'none';
+      document.getElementById('screen-app').style.display = login ? 'none' : 'block';
+    }
+
+    function profileInitials(name, username) {
+      const src = (name || username || 'A').trim();
+      const parts = src.split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+      return src.slice(0, 2).toUpperCase();
+    }
+
+    function formatProfileDate(iso) {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      if (isNaN(d)) return '—';
+      return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+    }
+
+    function updateHeaderProfile(data) {
+      if (!data) return;
+      const display = data.display_name || data.username || 'Admin';
+      const initials = profileInitials(data.nama_lengkap || data.display_name, data.username);
+      const avatar = document.getElementById('header-avatar');
+      const nameEl = document.getElementById('header-profile-name');
+      if (avatar) avatar.textContent = initials;
+      if (nameEl) nameEl.textContent = display;
+    }
+
+    function renderAdminProfile(data) {
+      if (!data) return;
+      updateHeaderProfile(data);
+      const initials = profileInitials(data.nama_lengkap || data.display_name, data.username);
+      const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || '—'; };
+      const avatarLg = document.getElementById('profile-avatar-lg');
+      if (avatarLg) avatarLg.textContent = initials;
+      setText('profile-display-name', data.display_name);
+      setText('profile-display-username', '@' + (data.username || '—'));
+      setText('profile-display-jabatan', data.jabatan || 'Admin Sistem');
+      setText('profile-display-unit', data.unit_kerja || 'Direktorat Jenderal Kekayaan Intelektual');
+      setText('view-nama', data.nama_lengkap || data.display_name);
+      setText('view-username', data.username);
+      setText('view-email', data.email);
+      setText('view-nip', data.nip);
+      setText('view-jabatan', data.jabatan);
+      setText('view-unit', data.unit_kerja);
+      setText('view-hp', data.no_hp);
+      setText('view-created', formatProfileDate(data.created_at));
+
+      const form = document.getElementById('form-admin-profile');
+      if (!form) return;
+      form.querySelector('[name="nama_lengkap"]').value = data.nama_lengkap || '';
+      form.querySelector('[name="email"]').value = data.email || '';
+      form.querySelector('[name="nip"]').value = data.nip || '';
+      form.querySelector('[name="jabatan"]').value = data.jabatan || '';
+      form.querySelector('[name="unit_kerja"]').value = data.unit_kerja || '';
+      form.querySelector('[name="username"]').value = '';
+      form.querySelector('[name="new_password"]').value = '';
+      form.querySelector('[name="current_password"]').value = '';
+    }
+
+    async function loadAdminProfile() {
+      const j = await apiGet('/admin/profile');
+      if (!j || !j.success) return;
+      renderAdminProfile(j.data);
+      return j.data;
+    }
+
+    async function refreshSessionProfile() {
+      const j = await fetch(API + '/me', { credentials }).then(r => r.json());
+      if (j && j.logged_in) {
+        updateHeaderProfile({
+          username: j.username,
+          nama_lengkap: j.nama_lengkap,
+          display_name: (j.nama_lengkap || '').trim() || j.username || 'Admin',
+        });
+      }
+    }
+
+    async function checkAuth() {
+      const res = await fetch(API + '/me', { credentials });
+      const j = await res.json();
+      if (j.skip_login || j.logged_in) {
+        showScreen(false);
+        if (j.logged_in) { refreshSessionProfile(); loadAdminProfile(); }
+      } else showScreen(true);
+    }
+
+    // Login
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = { username: fd.get('username'), password: fd.get('password') };
+      const msgEl = document.getElementById('login-msg');
+      showMsg(msgEl, 'Memeriksa...', 'info');
+      const res = await fetch(API + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), credentials });
+      const j = await res.json();
+      if (j.success) { showScreen(false); showMsg(msgEl, ''); refreshSessionProfile(); loadAdminProfile(); }
+      else { showMsg(msgEl, j.error || 'Login gagal.', 'error'); }
+    });
+
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+      await fetch(API + '/logout', { method: 'POST', credentials });
+      showScreen(true);
+    });
+
+    // Fetch dengan credentials (untuk API yang butuh login)
+    async function apiGet(url) {
+      const res = await fetch(API + url, { credentials });
+      const j = await res.json();
+      if (res.status === 401) { showScreen(true); return null; }
+      return j;
+    }
+    async function apiPost(url, body, methodOverride) {
+      const method = methodOverride || 'POST';
+      const res = await fetch(API + url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}), credentials });
+      const j = await res.json();
+      if (res.status === 401) { showScreen(true); return null; }
+      return j;
+    }
+    async function apiDelete(url) {
+      const res = await fetch(API + url, { method: 'DELETE', credentials });
+      const j = await res.json();
+      if (res.status === 401) { showScreen(true); return null; }
+      return j;
+    }
+
+    function switchPanel(panelId) {
+      document.querySelectorAll('.main-nav [data-panel]').forEach(b => {
+        b.classList.toggle('active', panelId !== 'profil' && b.dataset.panel === panelId);
+      });
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      const panel = document.getElementById('panel-' + panelId);
+      if (panel) panel.classList.add('active');
+      if (panelId === 'mahasiswa') { loadMahasiswa(); showMahasiswaStep1(); loadDirektoratForm(); }
+      if (panelId === 'laporan') { loadLaporanDirektorat(); loadDashboardStats(); }
+      if (panelId === 'profil') { 
+        loadAdminProfile(); 
+        document.getElementById('profile-view-section').style.display = 'block';
+        document.getElementById('profile-edit-section').style.display = 'none';
+      }
+    }
+    document.querySelectorAll('.main-nav [data-panel], nav [data-panel]').forEach(btn => {
+      btn.addEventListener('click', () => switchPanel(btn.dataset.panel));
+    });
+    document.getElementById('btn-profile').addEventListener('click', () => switchPanel('profil'));
+
+    async function loadDashboardStats() {
+      const j = await apiGet('/mahasiswa');
+      if (!j || !j.success) return;
+      const data = j.data || [];
+      const total = data.length;
+      const selesai = data.filter(m => m.has_wajah).length;
+      const belum = total - selesai;
+      const dirs = new Set(data.map(m => m.nama_direktorat_lantai_magang).filter(Boolean)).size;
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+      set('stat-total-mhs', total);
+      set('stat-wajah-selesai', selesai);
+      set('stat-wajah-belum', belum);
+      set('stat-direktorat', dirs);
+      const note = document.getElementById('stat-wajah-note');
+      if (note) {
+        note.textContent = total
+          ? (selesai === total ? 'Semua siap absensi' : selesai + ' dari ' + total + ' mahasiswa')
+          : 'Siap absensi';
+      }
+    }
+
+    // --- Mahasiswa: Step 1 & Step 2 ---
+    let regMahasiswaId = null;
+    let regMahasiswaNama = null;
+    let regPhotoCount = 0;
+
+    function showMahasiswaStep1() {
+      document.getElementById('mahasiswa-step1').style.display = 'block';
+      document.getElementById('mahasiswa-step2').style.display = 'none';
+      regMahasiswaId = null;
+      hideFormMahasiswa();
+    }
+
+    function showFormMahasiswa(isEdit) {
+      const card = document.getElementById('card-form-mahasiswa');
+      const title = document.getElementById('form-mahasiswa-title');
+      const btnSubmit = document.getElementById('btn-submit-mahasiswa');
+      if (card) card.style.display = 'block';
+      if (title) title.textContent = isEdit ? 'Edit Mahasiswa Magang' : 'Tambah Mahasiswa Magang';
+      if (btnSubmit) btnSubmit.textContent = isEdit ? 'Simpan Perubahan' : 'Simpan & Lanjut Registrasi Wajah';
+      card?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function hideFormMahasiswa() {
+      const card = document.getElementById('card-form-mahasiswa');
+      if (card) card.style.display = 'none';
+      resetFormMahasiswa();
+    }
+
+    function openMhsModal(m) {
+      selectedMhsModal = m;
+      const modal = document.getElementById('modal-mhs-actions');
+      const wrap = document.getElementById('modal-mhs-photo-wrap');
+      document.getElementById('modal-mhs-nama').textContent = m.nama || '-';
+      document.getElementById('modal-mhs-npm').textContent = 'NPM: ' + (m.npm || '-');
+      document.getElementById('modal-mhs-dir').textContent = m.nama_direktorat_lantai_magang || '-';
+      const regBtn = document.getElementById('modal-mhs-reg');
+      if (regBtn) regBtn.textContent = m.has_wajah ? 'Registrasi Ulang Wajah' : 'Registrasi Wajah';
+      if (wrap) {
+        wrap.innerHTML = m.foto_url
+          ? `<img src="${escapeHtml(m.foto_url)}" alt="" class="mhs-modal-photo" onerror="this.outerHTML='<div class=\\'mhs-modal-photo-placeholder\\'>👤</div>'">`
+          : '<div class="mhs-modal-photo-placeholder">👤</div>';
+      }
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeMhsModal() {
+      selectedMhsModal = null;
+      const modal = document.getElementById('modal-mhs-actions');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function showMahasiswaStep2(id, nama) {
+      regMahasiswaId = id;
+      regMahasiswaNama = nama;
+      regPhotoCount = 0;
+      document.getElementById('mahasiswa-step1').style.display = 'none';
+      document.getElementById('mahasiswa-step2').style.display = 'block';
+      document.getElementById('reg-nama-mahasiswa').textContent = nama;
+      document.getElementById('reg-pose-instruction').textContent = POSES[0];
+      document.getElementById('reg-pose-num').textContent = '1';
+      document.getElementById('reg-progress').textContent = '0 dari 5 foto diambil.';
+      document.getElementById('btn-capture-reg').style.display = '';
+      document.getElementById('btn-reg-selesai').style.display = 'none';
+      document.getElementById('msg-reg').innerHTML = '';
+      startVideo('video-reg');
+    }
+
+    async function loadDirektoratForm() {
+      const j = await apiGet('/direktorat');
+      if (!j || !j.success) return;
+      const sel = document.getElementById('select-direktorat-form');
+      sel.innerHTML = '<option value="">— Pilih Direktorat —</option>';
+      (j.data || []).forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = d;
+        sel.appendChild(opt);
+      });
+    }
+
+    async function loadMahasiswa() {
+      const list = document.getElementById('list-mahasiswa');
+      const j = await apiGet('/mahasiswa');
+      if (!j) return;
+      if (!j.success) { list.innerHTML = '<p class="msg error">' + escapeHtml(j.error || 'Gagal memuat') + '</p>'; return; }
+      mahasiswaCache = j.data || [];
+      populateMhsFilterDirektorat();
+      renderMahasiswaList();
+    }
+
+    function populateMhsFilterDirektorat() {
+      const sel = document.getElementById('mhs-filter-direktorat');
+      if (!sel) return;
+      const dirs = [...new Set(mahasiswaCache.map(m => m.nama_direktorat_lantai_magang).filter(Boolean))].sort();
+      const current = sel.value;
+      sel.innerHTML = '<option value="">Semua direktorat</option>';
+      dirs.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = d;
+        sel.appendChild(opt);
+      });
+      if ([...sel.options].some(o => o.value === current)) sel.value = current;
+    }
+
+    function filterMahasiswa(data) {
+      const q = mhsSearch.toLowerCase().trim();
+      return data.filter(m => {
+        if (mhsFilterDir && (m.nama_direktorat_lantai_magang || '') !== mhsFilterDir) return false;
+        if (!q) return true;
+        const hay = [m.nama, m.npm, m.jurusan, m.asal_universitas, m.nama_direktorat_lantai_magang, m.email, m.nama_mentor].join(' ').toLowerCase();
+        return hay.includes(q);
+      });
+    }
+
+    function renderMahasiswaList() {
+      bindListControls();
+      const list = document.getElementById('list-mahasiswa');
+      const toolbar = document.getElementById('list-mahasiswa-toolbar');
+      const paginationEl = document.getElementById('list-mahasiswa-pagination');
+      const meta = document.getElementById('mhs-meta');
+
+      if (!mahasiswaCache.length) {
+        toolbar.style.display = 'none';
+        paginationEl.style.display = 'none';
+        list.innerHTML = '<p class="msg info">Belum ada data mahasiswa.</p>';
+        return;
+      }
+
+      toolbar.style.display = 'flex';
+      const filtered = filterMahasiswa(mahasiswaCache);
+      const { items, page, totalPages, total } = paginateItems(filtered, mhsPage, mhsPageSize);
+      mhsPage = page;
+
+      if (meta) {
+        meta.textContent = filtered.length
+          ? `${filtered.length} hasil · total ${mahasiswaCache.length} mahasiswa`
+          : `Tidak ada hasil · total ${mahasiswaCache.length} mahasiswa`;
+      }
+
+      if (!filtered.length) {
+        list.innerHTML = '<p class="msg info">Tidak ada mahasiswa yang cocok dengan pencarian atau filter.</p>';
+        paginationEl.style.display = 'none';
+        return;
+      }
+
+      list.innerHTML = '<div class="mhs-card-grid"></div>';
+      const grid = list.querySelector('.mhs-card-grid');
+      items.forEach((m) => {
+        const card = document.createElement('article');
+        card.className = 'mhs-card';
+        card.innerHTML = `
+          ${m.foto_url
+            ? `<img src="${escapeHtml(m.foto_url)}" alt="${escapeHtml(m.nama)}" class="mhs-card-photo" loading="lazy" onerror="this.outerHTML='<div class=\\'mhs-card-photo-placeholder\\'>👤</div>'">`
+            : '<div class="mhs-card-photo-placeholder">👤</div>'}
+          <div class="mhs-card-body">
+            <div class="mhs-card-name">${escapeHtml(m.nama)}</div>
+            <div class="mhs-card-dir">${escapeHtml(m.nama_direktorat_lantai_magang || '-')}</div>
+            <span class="mhs-card-badge ${m.has_wajah ? 'badge badge-success' : 'badge badge-muted'}">${m.has_wajah ? 'Wajah OK' : 'Belum wajah'}</span>
+          </div>`;
+        card.addEventListener('click', () => openMhsModal(m));
+        grid.appendChild(card);
+      });
+
+      renderPagination(paginationEl, {
+        page,
+        totalPages,
+        total: filtered.length,
+        pageSize: mhsPageSize,
+        onPageChange: (p) => { mhsPage = p; renderMahasiswaList(); },
+      });
+    }
+
+    async function hapusMahasiswa(id) {
+      if (!confirm('Yakin hapus mahasiswa ini?')) return;
+      const j = await apiDelete('/mahasiswa/' + id);
+      if (j && j.success) { loadMahasiswa(); if (regMahasiswaId === id) showMahasiswaStep1(); }
+      else if (j) alert(j.error || 'Gagal menghapus');
+    }
+
+    function fillFormMahasiswa(m) {
+      const form = document.getElementById('form-mahasiswa');
+      form.dataset.editId = m.id;
+      pasfotoBase64 = null;
+      const label = document.getElementById('label-pasfoto');
+      if (label) label.textContent = 'Pasfoto (Kosongkan jika tidak diubah)';
+      form.querySelector('input[name="nama"]').value = m.nama || '';
+      form.querySelector('input[name="npm"]').value = m.npm || '';
+      form.querySelector('input[name="jurusan"]').value = m.jurusan || '';
+      form.querySelector('input[name="asal_universitas"]').value = m.asal_universitas || '';
+      form.querySelector('input[name="email"]').value = m.email || '';
+      const selDir = form.querySelector('select[name="nama_direktorat_lantai_magang"]');
+      if (selDir) selDir.value = m.nama_direktorat_lantai_magang || '';
+      form.querySelector('textarea[name="jobdesc_magang"]').value = m.jobdesc_magang || '';
+      const pm = form.querySelector('input[name="periode_mulai"]');
+      const ps = form.querySelector('input[name="periode_selesai"]');
+      const pl = form.querySelector('input[name="periode_label"]');
+      if (pm) pm.value = m.periode_mulai || '';
+      if (ps) ps.value = m.periode_selesai || '';
+      if (pl) pl.value = m.periode_label || '';
+      const disp = document.getElementById('periode_label_display');
+      if (disp) disp.textContent = m.periode_label || '-';
+      const mentor = form.querySelector('input[name="nama_mentor"]');
+      if (mentor) mentor.value = m.nama_mentor || '';
+      const btnSubmit = document.getElementById('btn-submit-mahasiswa');
+      if (btnSubmit) btnSubmit.textContent = 'Simpan Perubahan';
+      const title = document.getElementById('form-mahasiswa-title');
+      if (title) title.textContent = 'Edit Mahasiswa Magang';
+    }
+
+    function resetFormMahasiswa() {
+      const form = document.getElementById('form-mahasiswa');
+      form.reset();
+      delete form.dataset.editId;
+      pasfotoBase64 = null;
+      const label = document.getElementById('label-pasfoto');
+      if (label) label.textContent = 'Pasfoto *';
+      const disp = document.getElementById('periode_label_display');
+      if (disp) disp.textContent = '-';
+      const btnSubmit = document.getElementById('btn-submit-mahasiswa');
+      if (btnSubmit) btnSubmit.textContent = 'Simpan & Lanjut Registrasi Wajah';
+      const title = document.getElementById('form-mahasiswa-title');
+      if (title) title.textContent = 'Tambah Mahasiswa Magang';
+    }
+
+    // Convert passport photo input to Base64
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('mhs-pasfoto-input')?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            pasfotoBase64 = evt.target.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          pasfotoBase64 = null;
+        }
+      });
+    });
+
+    function editMahasiswa(m) {
+      document.getElementById('mahasiswa-step1').style.display = 'block';
+      document.getElementById('mahasiswa-step2').style.display = 'none';
+      regMahasiswaId = null;
+      fillFormMahasiswa(m);
+      showFormMahasiswa(true);
+    }
+
+    document.getElementById('btn-tambah-mahasiswa').addEventListener('click', () => {
+      document.getElementById('mahasiswa-step1').style.display = 'block';
+      document.getElementById('mahasiswa-step2').style.display = 'none';
+      resetFormMahasiswa();
+      showFormMahasiswa(false);
+    });
+    const btnBatal = document.getElementById('btn-batal-form-mhs');
+    if (btnBatal) btnBatal.addEventListener('click', hideFormMahasiswa);
+    const btnBatalFooter = document.getElementById('btn-batal-form-mhs-footer');
+    if (btnBatalFooter) btnBatalFooter.addEventListener('click', hideFormMahasiswa);
+    document.getElementById('card-form-mahasiswa').addEventListener('click', (e) => {
+      if (e.target.id === 'card-form-mahasiswa') hideFormMahasiswa();
+    });
+    document.getElementById('modal-mhs-close').addEventListener('click', closeMhsModal);
+    document.getElementById('modal-mhs-actions').addEventListener('click', (e) => {
+      if (e.target.id === 'modal-mhs-actions') closeMhsModal();
+    });
+    document.getElementById('modal-mhs-edit').addEventListener('click', () => {
+      if (!selectedMhsModal) return;
+      const m = selectedMhsModal;
+      closeMhsModal();
+      editMahasiswa(m);
+    });
+    document.getElementById('modal-mhs-reg').addEventListener('click', () => {
+      if (!selectedMhsModal) return;
+      const m = selectedMhsModal;
+      closeMhsModal();
+      showMahasiswaStep2(m.id, m.nama);
+    });
+    document.getElementById('modal-mhs-hapus').addEventListener('click', () => {
+      if (!selectedMhsModal) return;
+      const id = selectedMhsModal.id;
+      closeMhsModal();
+      hapusMahasiswa(id);
+    });
+
+    function updatePeriodeLabel() {
+      const start = document.getElementById('periode_mulai').value;
+      const end = document.getElementById('periode_selesai').value;
+      const disp = document.getElementById('periode_label_display');
+      const hidden = document.getElementById('periode_label');
+      if (!disp || !hidden) return;
+      if (!start || !end) {
+        disp.textContent = '-';
+        hidden.value = '';
+        return;
+      }
+      const d1 = new Date(start);
+      const d2 = new Date(end);
+      if (isNaN(d1) || isNaN(d2) || d2 < d1) {
+        disp.textContent = 'Periode tidak valid';
+        hidden.value = '';
+        return;
+      }
+      let months = (d2.getFullYear() - d1.getFullYear()) * 12 + (d2.getMonth() - d1.getMonth());
+      if (d2.getDate() < d1.getDate()) months -= 1;
+      if (months < 1) {
+        disp.textContent = 'Kurang dari 1 bulan';
+        hidden.value = 'Kurang dari 1 bulan';
+        return;
+      }
+      const label = months + ' bulan';
+      disp.textContent = label;
+      hidden.value = label;
+    }
+    const periodeMulaiInput = document.getElementById('periode_mulai');
+    const periodeSelesaiInput = document.getElementById('periode_selesai');
+    if (periodeMulaiInput) periodeMulaiInput.addEventListener('change', updatePeriodeLabel);
+    if (periodeSelesaiInput) periodeSelesaiInput.addEventListener('change', updatePeriodeLabel);
+
+    document.getElementById('form-mahasiswa').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const fd = new FormData(form);
+      const body = Object.fromEntries([...fd].filter(([k,v]) => v && k !== 'pasfoto_file'));
+      if (pasfotoBase64) {
+        body.pasfoto = pasfotoBase64;
+      }
+      const msgEl = document.getElementById('form-mahasiswa-msg');
+      msgEl.innerHTML = '';
+      [].forEach.call(form.querySelectorAll('[data-error]'), el => { el.removeAttribute('data-error'); el.style.borderColor = ''; });
+      let j;
+      if (form.dataset.editId) {
+        j = await apiPost('/mahasiswa/' + form.dataset.editId, body, 'PUT');
+      } else {
+        j = await apiPost('/mahasiswa', body);
+      }
+      if (!j) return;
+      if (j.success) {
+        if (form.dataset.editId) {
+          showMsg(msgEl, 'Data mahasiswa berhasil diperbarui.', 'success');
+          hideFormMahasiswa();
+          loadDirektoratForm();
+          loadMahasiswa();
+        } else {
+          hideFormMahasiswa();
+          document.getElementById('modal-mahasiswa-berhasil').style.display = 'flex';
+          document.getElementById('form-mahasiswa').reset();
+          loadDirektoratForm();
+          loadMahasiswa();
+          showMahasiswaStep2(j.id, body.nama);
+        }
+      } else {
+        let errHtml = (j.error || 'Gagal menyimpan') + (j.fields ? '<ul style="margin-top:0.5rem; padding-left:1.25rem;">' + Object.entries(j.fields).map(([f, m]) => '<li><strong>' + f + ':</strong> ' + m + '</li>').join('') + '</ul>' : '');
+        showMsg(msgEl, errHtml, 'error');
+        if (j.fields) Object.keys(j.fields).forEach(fieldName => { const el = form.querySelector('[name="' + fieldName + '"]'); if (el) { el.setAttribute('data-error', '1'); el.style.borderColor = 'var(--danger)'; } });
+      }
+    });
+
+    function loadMahasiswaSelect(selectId) {
+      const sel = document.getElementById(selectId);
+      apiGet('/mahasiswa').then(j => {
+        if (!j || !j.success) return;
+        sel.innerHTML = selectId === 'laporan-mahasiswa' ? '<option value="">Semua</option>' : '';
+        (j.data || []).forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.id;
+          opt.textContent = (m.npm || '') + ' - ' + m.nama;
+          sel.appendChild(opt);
+        });
+      });
+    }
+
+    // Webcam
+    function startVideo(videoId) {
+      const video = document.getElementById(videoId);
+      if (video.srcObject) return;
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+        .then(s => { video.srcObject = s; })
+        .catch(() => {
+          const msgEl = document.getElementById(videoId === 'video-reg' ? 'msg-reg' : 'msg-absen');
+          if (msgEl) showMsg(msgEl, 'Akses kamera ditolak. Izinkan kamera untuk browser ini.', 'error');
+        });
+    }
+
+    function captureToDataUrl(videoId, canvasId) {
+      const video = document.getElementById(videoId);
+      const canvas = document.getElementById(canvasId);
+      const ctx = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      if (video.classList.contains('mirrored')) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+      }
+      ctx.drawImage(video, 0, 0);
+      return canvas.toDataURL('image/jpeg', 0.9);
+    }
+
+    document.getElementById('reg-mirror-toggle').addEventListener('change', (e) => {
+      const video = document.getElementById('video-reg');
+      if (e.target.checked) {
+        video.classList.add('mirrored');
+      } else {
+        video.classList.remove('mirrored');
+      }
+    });
+
+    // Registrasi wajah — 5 posisi
+    document.getElementById('btn-capture-reg').addEventListener('click', async () => {
+      if (!regMahasiswaId) return;
+      const dataUrl = captureToDataUrl('video-reg', 'canvas-reg');
+      showMsg(document.getElementById('msg-reg'), 'Mengirim...', 'info');
+      const j = await apiPost('/mahasiswa/' + regMahasiswaId + '/wajah', { image: dataUrl });
+      if (!j) return;
+      if (!j.success) { showMsg(document.getElementById('msg-reg'), j.error || 'Gagal', 'error'); return; }
+      regPhotoCount++;
+      document.getElementById('reg-progress').textContent = regPhotoCount + ' dari 5 foto diambil.';
+      showMsg(document.getElementById('msg-reg'), '✓ Posisi ' + regPhotoCount + ' selesai. ' + (regPhotoCount < 5 ? 'Sekarang: ' + POSES[regPhotoCount] : ''), 'success');
+      if (regPhotoCount >= 5) {
+        document.getElementById('btn-capture-reg').style.display = 'none';
+        document.getElementById('btn-reg-selesai').style.display = 'inline-block';
+        showMsg(document.getElementById('msg-reg'), 'Semua 5 posisi selesai. Klik "Selesai" atau scan model di bawah.', 'success');
+      } else {
+        document.getElementById('reg-pose-instruction').textContent = POSES[regPhotoCount];
+        document.getElementById('reg-pose-num').textContent = regPhotoCount + 1;
+      }
+    });
+    document.getElementById('btn-reg-selesai').addEventListener('click', async () => {
+      if (!regMahasiswaId) {
+        showMahasiswaStep1();
+        return;
+      }
+      const msg = document.getElementById('msg-reg');
+      showMsg(msg, 'Menyimpan status registrasi wajah...', 'info');
+      const j = await apiPost('/mahasiswa/' + regMahasiswaId + '/wajah-selesai', {});
+      if (j && j.success) {
+        showMsg(msg, 'Registrasi wajah dinyatakan selesai.', 'success');
+        showMahasiswaStep1();
+        loadMahasiswa();
+      } else if (j) {
+        showMsg(msg, j.error || 'Gagal menyimpan status wajah.', 'error');
+      }
+    });
+
+    document.getElementById('btn-train').addEventListener('click', async () => {
+      const msg = document.getElementById('msg-train');
+      showMsg(msg, 'Training...', 'info');
+      const j = await apiPost('/train');
+      if (!j) return;
+      showMsg(msg, j.success ? j.message : (j.error || 'Gagal'), j.success ? 'success' : 'error');
+    });
+
+    document.getElementById('btn-close-modal-berhasil').addEventListener('click', () => {
+      document.getElementById('modal-mahasiswa-berhasil').style.display = 'none';
+    });
+
+    // Laporan — filter by direktorat
+    function loadLaporanDirektorat() {
+      apiGet('/direktorat').then(j => {
+        if (!j || !j.success) return;
+        const list = j.data || [];
+        const sel = document.getElementById('laporan-direktorat');
+        sel.innerHTML = '<option value="">Semua Direktorat</option>';
+        list.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.textContent = d;
+          sel.appendChild(opt);
+        });
+        const sel2 = document.getElementById('direktorat-daftar');
+        sel2.innerHTML = '<option value="">Pilih direktorat...</option>';
+        list.forEach(d => {
+          const opt = document.createElement('option');
+          opt.value = d;
+          opt.textContent = d;
+          sel2.appendChild(opt);
+        });
+      });
+    }
+
+
+    function formatTanggal(d) {
+      return d.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+    function formatJam(d) {
+      return d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+    }
+    function getKeteranganAbsensi(row) {
+      if (!row.waktu) return '';
+      const d = new Date(row.waktu);
+      const menit = d.getHours() * 60 + d.getMinutes();
+      const mulai = 8 * 60;
+      const selesai = 16 * 60;
+      const status = (row.status || '').toLowerCase();
+      if (status === 'masuk') {
+        if (menit <= mulai) return 'Tepat waktu masuk';
+        return 'Terlambat masuk';
+      }
+      if (status === 'keluar') {
+        if (menit < selesai) return 'Pulang lebih awal';
+        if (menit === selesai) return 'Tepat waktu pulang';
+        return 'Terlambat absen keluar';
+      }
+      return '';
+    }
+
+    function filterLaporanRows(rows) {
+      const q = laporanSearch.toLowerCase().trim();
+      if (!q) return rows;
+      return rows.filter(r => {
+        const hay = [r.nama, r.npm, r.nama_direktorat_lantai_magang, r.status].join(' ').toLowerCase();
+        return hay.includes(q);
+      });
+    }
+
+    function buildLaporanRowHtml(r) {
+      const d = r.waktu ? new Date(r.waktu) : null;
+      const tgl = d ? formatTanggal(d) : '';
+      const statusLower = (r.status || '').toLowerCase();
+      const jam = (d && statusLower !== 'izin' && statusLower !== 'tanpa keterangan') ? formatJam(d) : '—';
+      
+      let statusText = r.status || '';
+      if (statusLower === 'izin') {
+        const tipe = r.tipe_izin ? (r.tipe_izin.charAt(0).toUpperCase() + r.tipe_izin.slice(1)) : '';
+        statusText = `Izin (${tipe || 'Lainnya'})`;
+      } else if (statusLower === 'tanpa keterangan') {
+        statusText = 'Tanpa Keterangan';
+      } else {
+        statusText = statusText ? (statusText.charAt(0).toUpperCase() + statusText.slice(1)) : '';
+      }
+
+      let ket = getKeteranganAbsensi(r);
+      let ketHtml = '';
+      if (statusLower === 'izin') {
+        if (r.surat_izin_path) {
+          ketHtml = `<a href="/api/absensi/${r.id}/surat-izin" target="_blank" class="btn btn-secondary" style="padding:0.25rem 0.6rem; font-size:0.72rem; border-radius:999px; text-decoration:none; display:inline-flex; align-items:center; gap:0.25rem;">📄 Lihat PDF</a>`;
+        } else {
+          ketHtml = `<span style="font-size:0.75rem; color:var(--text-muted);">Tanpa Surat</span>`;
+        }
+      } else if (statusLower === 'tanpa keterangan') {
+        ketHtml = `<span class="badge" style="padding:0.25rem 0.6rem; font-size:0.72rem; border-radius:999px; background-color:var(--danger); color:#fff; font-weight:500;">Alpa</span>`;
+      } else {
+        const isLate = /Terlambat|Pulang lebih awal/i.test(ket);
+        const ketBtnClass = isLate ? 'btn btn-danger' : (ket ? 'btn btn-secondary' : '');
+        ketHtml = ket ? `<button type="button" class="${ketBtnClass}" style="padding:0.25rem 0.6rem; font-size:0.72rem; border-radius:999px;">${escapeHtml(ket)}</button>` : '';
+      }
+
+      return `<tr>
+        <td class="cell-nowrap">${escapeHtml(tgl)}</td>
+        <td class="cell-nowrap">${escapeHtml(jam)}</td>
+        <td class="cell-nowrap">${escapeHtml(r.npm || '')}</td>
+        <td>${escapeHtml(r.nama)}</td>
+        <td class="cell-ellipsis" title="${escapeHtml(r.nama_direktorat_lantai_magang || '')}">${escapeHtml(r.nama_direktorat_lantai_magang || '')}</td>
+        <td class="cell-nowrap">${escapeHtml(statusText)}</td>
+        <td>${ketHtml}</td>
+      </tr>`;
+    }
+
+    function renderLaporanSummary(rows) {
+      const summaryEl = document.getElementById('laporan-summary');
+      if (!rows.length) {
+        summaryEl.style.display = 'none';
+        summaryEl.innerHTML = '';
+        return;
+      }
+      const uniqueMhs = new Set(rows.map(r => r.mahasiswa_id || r.npm)).size;
+      const masuk = rows.filter(r => (r.status || '').toLowerCase() === 'masuk').length;
+      const keluar = rows.filter(r => (r.status || '').toLowerCase() === 'keluar').length;
+      summaryEl.style.display = 'flex';
+      summaryEl.innerHTML = `
+        <span class="summary-chip"><strong>${rows.length}</strong> catatan absensi</span>
+        <span class="summary-chip"><strong>${uniqueMhs}</strong> mahasiswa</span>
+        <span class="summary-chip">Masuk: <strong>${masuk}</strong></span>
+        <span class="summary-chip">Keluar: <strong>${keluar}</strong></span>`;
+    }
+
+    function renderLaporanTable() {
+      bindListControls();
+      const msg = document.getElementById('msg-laporan');
+      const tbody = document.querySelector('#table-laporan tbody');
+      const tableWrap = document.getElementById('laporan-table-wrap');
+      const toolbar = document.getElementById('laporan-toolbar');
+      const paginationEl = document.getElementById('laporan-pagination');
+      const meta = document.getElementById('laporan-meta');
+      const rows = laporanCache;
+
+      renderLaporanSummary(rows);
+
+      if (!rows.length) {
+        toolbar.style.display = 'none';
+        tableWrap.style.display = 'none';
+        paginationEl.style.display = 'none';
+        const exportBtn = document.getElementById('btn-export-excel');
+        if (exportBtn) exportBtn.style.display = 'none';
+        tbody.innerHTML = '<tr><td colspan="7">Tidak ada data.</td></tr>';
+        return;
+      }
+
+      toolbar.style.display = 'flex';
+      tableWrap.style.display = 'block';
+      const exportBtn = document.getElementById('btn-export-excel');
+      if (exportBtn) exportBtn.style.display = 'inline-flex';
+
+      const filtered = filterLaporanRows(rows);
+      const { items, page, totalPages, total } = paginateItems(filtered, laporanPage, laporanPageSize);
+      laporanPage = page;
+
+      if (meta) {
+        meta.textContent = filtered.length
+          ? `${filtered.length} baris absensi`
+          : 'Tidak ada hasil pencarian';
+      }
+
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="7">Tidak ada data yang cocok dengan pencarian.</td></tr>';
+        paginationEl.style.display = 'none';
+        return;
+      }
+
+      tbody.innerHTML = items.map(buildLaporanRowHtml).join('');
+
+      renderPagination(paginationEl, {
+        page,
+        totalPages,
+        total: filtered.length,
+        pageSize: laporanPageSize,
+        onPageChange: (p) => { laporanPage = p; renderLaporanTable(); },
+      });
+    }
+
+    async function loadLaporanTable() {
+      const dari = document.getElementById('laporan-dari').value;
+      const sampai = document.getElementById('laporan-sampai').value;
+      const dir = document.getElementById('laporan-direktorat').value;
+      let q = [];
+      if (dari) q.push('dari=' + encodeURIComponent(dari));
+      if (sampai) q.push('sampai=' + encodeURIComponent(sampai));
+      if (dir) q.push('direktorat=' + encodeURIComponent(dir));
+      const j = await apiGet('/laporan?' + q.join('&'));
+      if (!j) return;
+      const msg = document.getElementById('msg-laporan');
+      if (!j.success) {
+        showMsg(msg, j.error, 'error');
+        laporanCache = [];
+        renderLaporanTable();
+        return;
+      }
+      showMsg(msg, '');
+      laporanCache = j.data || [];
+      window._laporanData = laporanCache;
+      laporanPage = 1;
+      laporanSearch = '';
+      const searchEl = document.getElementById('laporan-search');
+      if (searchEl) searchEl.value = '';
+      renderLaporanTable();
+    }
+
+    document.getElementById('btn-load-laporan').addEventListener('click', loadLaporanTable);
+    document.getElementById('btn-export-excel').addEventListener('click', exportLaporanToExcel);
+
+    function exportLaporanToExcel() {
+      const rows = filterLaporanRows(laporanCache);
+      if (!rows.length) {
+        alert('Tidak ada data untuk diexport.');
+        return;
+      }
+      
+      const dataToExport = rows.map((r, index) => {
+        const d = r.waktu ? new Date(r.waktu) : null;
+        const tgl = d ? formatTanggal(d) : '';
+        const statusLower = (r.status || '').toLowerCase();
+        const jam = (d && statusLower !== 'izin' && statusLower !== 'tanpa keterangan') ? formatJam(d) : '—';
+        
+        let statusText = r.status || '';
+        if (statusLower === 'izin') {
+          const tipe = r.tipe_izin ? (r.tipe_izin.charAt(0).toUpperCase() + r.tipe_izin.slice(1)) : '';
+          statusText = `Izin (${tipe || 'Lainnya'})`;
+        } else if (statusLower === 'tanpa keterangan') {
+          statusText = 'Tanpa Keterangan';
+        } else {
+          statusText = statusText ? (statusText.charAt(0).toUpperCase() + statusText.slice(1)) : '';
+        }
+
+        let ket = '';
+        if (statusLower === 'izin') {
+          ket = r.surat_izin_path ? 'Ada Surat (PDF)' : 'Tanpa Surat';
+        } else if (statusLower === 'tanpa keterangan') {
+          ket = 'Alpa';
+        } else {
+          ket = getKeteranganAbsensi(r);
+        }
+
+        return {
+          'No': index + 1,
+          'Tanggal': tgl,
+          'Jam': jam,
+          'NPM': r.npm || '',
+          'Nama': r.nama || '',
+          'Direktorat': r.nama_direktorat_lantai_magang || '',
+          'Status': statusText,
+          'Keterangan': ket
+        };
+      });
+
+      const ws = XLSX.utils.json_to_sheet(dataToExport);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Laporan Absensi');
+
+      // Autofit columns
+      const maxProps = {};
+      dataToExport.forEach(row => {
+        Object.keys(row).forEach(key => {
+          const val = String(row[key]);
+          maxProps[key] = Math.max(maxProps[key] || key.length, val.length);
+        });
+      });
+      ws['!cols'] = Object.keys(maxProps).map(key => ({ wch: maxProps[key] + 3 }));
+
+      const dariVal = document.getElementById('laporan-dari').value || 'Semua';
+      const sampaiVal = document.getElementById('laporan-sampai').value || 'Semua';
+      const filename = `Laporan_Absensi_Mahasiswa_${dariVal}_sd_${sampaiVal}.xlsx`;
+
+      XLSX.writeFile(wb, filename);
+    }
+
+    // Profil admin — data diri & keamanan akun
+    document.getElementById('form-admin-profile').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const body = {
+        nama_lengkap: (fd.get('nama_lengkap') || '').trim(),
+        email: (fd.get('email') || '').trim(),
+        nip: (fd.get('nip') || '').trim(),
+        jabatan: (fd.get('jabatan') || '').trim(),
+        unit_kerja: (fd.get('unit_kerja') || '').trim(),
+        no_hp: (fd.get('no_hp') || '').trim(),
+      };
+      const current = fd.get('current_password') || '';
+      const username = (fd.get('username') || '').trim();
+      const newPassword = fd.get('new_password') || '';
+      if (current) body.current_password = current;
+      if (username) body.username = username;
+      if (newPassword) body.new_password = newPassword;
+      const msgEl = document.getElementById('profile-msg');
+      showMsg(msgEl, 'Menyimpan...', 'info');
+      const res = await fetch(API + '/admin/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), credentials });
+      const j = await res.json();
+      if (res.status === 401) { showScreen(true); return; }
+      if (!j) return;
+      if (j.success) {
+        showMsg(msgEl, j.message || 'Profil berhasil diperbarui.', 'success');
+        if (j.data) renderAdminProfile(j.data);
+        e.target.querySelector('[name="current_password"]').value = '';
+        e.target.querySelector('[name="username"]').value = '';
+        e.target.querySelector('[name="new_password"]').value = '';
+        
+        setTimeout(() => {
+          document.getElementById('profile-view-section').style.display = 'block';
+          document.getElementById('profile-edit-section').style.display = 'none';
+        }, 1000);
+      } else {
+        showMsg(msgEl, j.error || 'Gagal.', 'error');
+      }
+    });
+
+    document.getElementById('btn-edit-profile-toggle').addEventListener('click', () => {
+      document.getElementById('profile-view-section').style.display = 'none';
+      document.getElementById('profile-edit-section').style.display = 'block';
+      document.getElementById('profile-msg').innerHTML = '';
+    });
+
+    document.getElementById('btn-cancel-profile-edit').addEventListener('click', () => {
+      document.getElementById('profile-view-section').style.display = 'block';
+      document.getElementById('profile-edit-section').style.display = 'none';
+    });
+
+    // (switchWorkflowTab has been removed)
+
+    // Kontrol modal input absensi manual
+    const modalAbsensi = document.getElementById('modal-tambah-absensi');
+    const statusSelect = document.getElementById('input-absensi-status');
+    const tipeContainer = document.getElementById('input-absensi-tipe-container');
+    const fileContainer = document.getElementById('input-absensi-file-container');
+    const pdfInput = document.getElementById('input-absensi-pdf');
+
+    document.getElementById('btn-tambah-absensi-manual').addEventListener('click', () => {
+      // Reset form
+      document.getElementById('form-tambah-absensi').reset();
+      document.getElementById('input-absensi-msg').innerHTML = '';
+      
+      // Set default date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('input-absensi-tanggal').value = today;
+      
+      // Populate mahasiswa select dropdown
+      loadMahasiswaSelect('input-absensi-mahasiswa');
+      
+      // Show/hide default fields
+      tipeContainer.style.display = 'block';
+      fileContainer.style.display = 'block';
+      pdfInput.setAttribute('required', 'required');
+      
+      modalAbsensi.style.display = 'flex';
+    });
+
+    document.getElementById('btn-close-absensi-modal').addEventListener('click', () => {
+      modalAbsensi.style.display = 'none';
+    });
+
+    modalAbsensi.addEventListener('click', (e) => {
+      if (e.target.id === 'modal-tambah-absensi') modalAbsensi.style.display = 'none';
+    });
+
+    statusSelect.addEventListener('change', () => {
+      if (statusSelect.value === 'izin') {
+        tipeContainer.style.display = 'block';
+        fileContainer.style.display = 'block';
+        pdfInput.setAttribute('required', 'required');
+      } else {
+        tipeContainer.style.display = 'none';
+        fileContainer.style.display = 'none';
+        pdfInput.removeAttribute('required');
+        pdfInput.value = '';
+      }
+    });
+
+    document.getElementById('form-tambah-absensi').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const fd = new FormData(form);
+      const msgEl = document.getElementById('input-absensi-msg');
+      showMsg(msgEl, 'Menyimpan...', 'info');
+      
+      try {
+        const res = await fetch(API + '/absensi/manual', {
+          method: 'POST',
+          body: fd,
+          credentials
+        });
+        const j = await res.json();
+        if (res.status === 401) { showScreen(true); return; }
+        if (j && j.success) {
+          showMsg(msgEl, 'Ketidakhadiran berhasil disimpan.', 'success');
+          setTimeout(() => {
+            modalAbsensi.style.display = 'none';
+            form.reset();
+            loadLaporanTable();
+          }, 1000);
+        } else {
+          showMsg(msgEl, (j && j.error) || 'Gagal menyimpan.', 'error');
+        }
+      } catch (err) {
+        showMsg(msgEl, 'Error: ' + err.message, 'error');
+      }
+    });
+
+    // Init
+    checkAuth();
+  </script>
+</body>
+</html>
