@@ -17,9 +17,10 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
 -- Database: `skripsi_absensi_djki`
 --
+CREATE DATABASE IF NOT EXISTS `skripsi_absensi_djki` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `skripsi_absensi_djki`;
 
 -- --------------------------------------------------------
 
