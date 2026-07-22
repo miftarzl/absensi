@@ -18,7 +18,6 @@ services:
       - db_data:/var/lib/mysql
       # Otomatis eksekusi file SQL awal saat container database pertama kali dibuat
       - ./database.sql:/docker-entrypoint-initdb.d/1_database.sql:ro
-      - ./migrate_v2.sql:/docker-entrypoint-initdb.d/2_migrate_v2.sql:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
       interval: 10s
