@@ -23,6 +23,8 @@ def get_pool():
             pool_config['pool_name'] = "skripsi_absensi_pool"
             # Menentukan maksimal 5 koneksi aktif yang berjalan bersamaan
             pool_config['pool_size'] = 5
+            # Mengeset zona waktu koneksi ke WIB (UTC+7)
+            pool_config['session_variables'] = {'time_zone': '+07:00'}
             _connection_pool = pooling.MySQLConnectionPool(**pool_config)
         except Exception as e:
             print(f"Error saat membuat connection pool: {e}. Fallback ke koneksi langsung.")
@@ -41,8 +43,10 @@ def get_connection():
         except Exception as e:
             print(f"Koneksi pool gagal: {e}. Dialihkan ke koneksi langsung.")
     try:
-        # Melakukan koneksi langsung ke server MySQL menggunakan kredensial dari config
-        conn = mysql.connector.connect(**Config.DB_CONFIG)
+        # Melakukan koneksi langsung ke server MySQL menggunakan kredensial dari config dan WIB timezone (+07:00)
+        conn_config = Config.DB_CONFIG.copy()
+        conn_config['session_variables'] = {'time_zone': '+07:00'}
+        conn = mysql.connector.connect(**conn_config)
         return conn
     except Error as e:
         raise RuntimeError(f"Koneksi ke database gagal: {e}")

@@ -12,11 +12,18 @@
 import os
 import base64
 import glob
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from functools import wraps
 from flask import Flask, request, jsonify, send_from_directory, session
 from flask_cors import CORS
 from werkzeug.security import check_password_hash, generate_password_hash
+
+# Konfigurasi Zona Waktu WIB (Waktu Indonesia Barat / UTC+7)
+WIB = timezone(timedelta(hours=7))
+
+def get_wib_now():
+    """Mengembalikan datetime saat ini sesuai Waktu Indonesia Barat (WIB / UTC+7)."""
+    return datetime.now(WIB).replace(tzinfo=None)
 
 from config import Config
 from database import get_cursor, init_db
@@ -301,7 +308,7 @@ def api_tambah_mahasiswa():
             return jsonify({'success': False, 'error': 'Periksa kembali data yang diisi.', 'fields': {'pasfoto_file': 'File pasfoto tidak valid.'}}), 400
 
         # Simpan pasfoto
-        filename = f"pasfoto_{npm}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        filename = f"pasfoto_{npm}_{get_wib_now().strftime('%Y%m%d_%H%M%S')}.jpg"
         filepath = os.path.join(Config.PASFOTO_FOLDER, filename)
         import cv2
         cv2.imwrite(filepath, img)
@@ -404,7 +411,7 @@ def api_update_mahasiswa(id):
         if pasfoto_b64:
             img = decode_image_from_base64(pasfoto_b64)
             if img is not None:
-                new_foto_filename = f"pasfoto_{npm}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+                new_foto_filename = f"pasfoto_{npm}_{get_wib_now().strftime('%Y%m%d_%H%M%S')}.jpg"
                 filepath = os.path.join(Config.PASFOTO_FOLDER, new_foto_filename)
                 import cv2
                 cv2.imwrite(filepath, img)
@@ -551,7 +558,7 @@ def api_tambah_wajah(id):
         face_dir = os.path.join(Config.FACES_FOLDER, str(label_id))
         os.makedirs(face_dir, exist_ok=True)
         import cv2
-        filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
+        filename = f"{get_wib_now().strftime('%Y%m%d_%H%M%S')}.jpg"
         filepath = os.path.join(face_dir, filename)
         cv2.imwrite(filepath, roi)
         return jsonify({'success': True, 'message': 'Sampel wajah berhasil disimpan.', 'file': filename})
@@ -672,7 +679,7 @@ def api_absensi():
                 'last_status': last_status,
                 'next_allowed': other,
             }), 400
-        waktu = datetime.now()
+        waktu = get_wib_now()
         with get_cursor() as cur:
             cur.execute('INSERT INTO absensi (mahasiswa_id, waktu, status) VALUES (%s, %s, %s)',
                         (mhs['id'], waktu, status))

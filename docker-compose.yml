@@ -11,6 +11,7 @@ services:
       MYSQL_DATABASE: skripsi_absensi_djki
       MYSQL_USER: user_absensi
       MYSQL_PASSWORD: user_password
+      TZ: Asia/Jakarta
     ports:
       # Mapping port 3038 ke port internal MySQL 3306
       - "3038:3306"
@@ -40,6 +41,7 @@ services:
       - SECRET_KEY=rahasia-super-aman-ganti-di-produksi
       - UPLOAD_FOLDER=uploads
       - MODEL_FOLDER=recognizer
+      - TZ=Asia/Jakarta
     volumes:
       - ./uploads:/app/uploads
       - ./recognizer:/app/recognizer
