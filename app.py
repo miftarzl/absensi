@@ -271,7 +271,7 @@ def api_list_mahasiswa():
             r['has_wajah'] = bool(r.get('wajah_selesai'))
             r['foto_url'] = _mahasiswa_foto_url(r['id'], r.get('foto_path'))
             # Format dates to ISO string YYYY-MM-DD so HTML inputs display them correctly
-            for key in ('periode_mulai', 'periode_selesai'):
+            for key in ('periode_mulai', 'periode_selesai', 'created_at'):
                 if r.get(key):
                     r[key] = r[key].isoformat() if hasattr(r[key], 'isoformat') else str(r[key])
         return jsonify({'success': True, 'data': rows})
@@ -368,7 +368,7 @@ def api_get_mahasiswa(id):
         if not row:
             return jsonify({'success': False, 'error': 'Mahasiswa tidak ditemukan.'}), 404
         # Format dates to ISO string YYYY-MM-DD so HTML inputs display them correctly
-        for key in ('periode_mulai', 'periode_selesai'):
+        for key in ('periode_mulai', 'periode_selesai', 'created_at'):
             if row.get(key):
                 row[key] = row[key].isoformat() if hasattr(row[key], 'isoformat') else str(row[key])
         return jsonify({'success': True, 'data': row})
